@@ -31,6 +31,9 @@ const DEFAULT_SETTINGS = {
   // Enhancements (true = show the feature)
   "core-curriculum": true,
   "problem-search": true,
+  "practice-mode": false,
+  "practice-mode-days": 7,
+  "practice-mode-start": null,
 };
 
 // Current settings (loaded from storage)
@@ -143,6 +146,15 @@ const ALL_SELECTORS = [
   ...SIDEBAR_SELECTORS,
 ];
 
+/**
+ * Check if the extension context is still valid
+ */
+function isExtensionValid() {
+  return (
+    typeof chrome !== "undefined" && !!chrome.runtime && !!chrome.runtime.id
+  );
+}
+
 let lastUrl = location.href;
 let sidebarObserverSetup = false;
 let styleInjected = false;
@@ -169,12 +181,17 @@ function injectStyles() {
  * Load settings from Chrome storage
  */
 async function loadSettings() {
+  if (!isExtensionValid()) return;
   try {
     const result = await chrome.storage.sync.get("cleanerSettings");
     if (result.cleanerSettings) {
       currentSettings = { ...DEFAULT_SETTINGS, ...result.cleanerSettings };
     }
   } catch (error) {
+    // Silently ignore context invalidated error - it's expected when extension updates
+    if (error.message && error.message.includes("context invalidated")) {
+      return;
+    }
     console.error("[Scaler DOM Cleaner] Error loading settings:", error);
     currentSettings = { ...DEFAULT_SETTINGS };
   }
@@ -584,6 +601,7 @@ function setupSidebarObserver() {
  * Run all cleanup tasks
  */
 async function runCleanup() {
+  if (!isExtensionValid()) return;
   await loadSettings();
   injectStyles();
   cleanupGlobal();
@@ -591,6 +609,7 @@ async function runCleanup() {
   cleanupSidebar();
   setupSidebarObserver();
   setupModalObserver();
+  handlePracticeMode();
 }
 
 /**
@@ -668,6 +687,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       } else {
         removeSearchBar();
       }
+    } else if (key === "practice-mode") {
+      if (value) {
+        handlePracticeMode();
+      } else {
+        // Clearing data is handled in popup.js but we can also do it here if needed
+        // For consistency, let popup.js do the heavy lifting of storage clearing
+      }
+    } else if (key === "practice-mode-days") {
+      // Just update local settings
     } else {
       updateVisibilityForKey(key, value);
     }
@@ -1258,4 +1286,126 @@ handleUrlChange = function () {
   if (isProblemsPage()) {
     setTimeout(initProblemsSearch, 1500);
   }
+
+  // Handle practice mode on URL change
+  setTimeout(handlePracticeMode, 2000);
 };
+
+/**
+ * Handle Practice Mode - Auto-reset code in assignments
+ */
+async function handlePracticeMode() {
+  if (!isExtensionValid()) return;
+  if (!currentSettings["practice-mode"]) return;
+
+  // Check for expiration
+  if (currentSettings["practice-mode-start"]) {
+    const elapsed = Date.now() - currentSettings["practice-mode-start"];
+    const expiryMs =
+      (currentSettings["practice-mode-days"] || 7) * 24 * 60 * 60 * 1000;
+    if (elapsed > expiryMs) {
+      // Auto-disable practice mode
+      currentSettings["practice-mode"] = false;
+      currentSettings["practice-mode-start"] = null;
+      if (isExtensionValid()) {
+        chrome.storage.sync.set({ cleanerSettings: currentSettings });
+      }
+      // console.log("[Scaler DOM Cleaner] Practice mode expired and auto-disabled");
+      return;
+    }
+  }
+
+  if (!location.href.includes("assignment")) return;
+
+  const match = location.pathname.match(
+    /\/class\/(\d+)\/assignment\/problems\/(\d+)/,
+  );
+  if (!match) return;
+
+  const classId = match[1];
+  const problemId = match[2];
+  const storageKey = `reset_history_${classId}_${problemId}`;
+
+  try {
+    const result = await chrome.storage.local.get(storageKey);
+    const lastReset = result[storageKey];
+    const now = Date.now();
+    const fiveHours = 5 * 60 * 60 * 1000;
+
+    const reloadIcon = document.querySelector("i.cr-icon-refresh");
+    const reloadBtn = reloadIcon ? reloadIcon.closest("a.tappable") : null;
+
+    if (reloadBtn && !reloadBtn.dataset.resetListener) {
+      reloadBtn.addEventListener("click", () => {
+        if (isExtensionValid()) {
+          chrome.storage.local.set({ [storageKey]: Date.now() });
+        }
+      });
+      reloadBtn.dataset.resetListener = "true";
+    }
+
+    if (!lastReset || now - lastReset > fiveHours) {
+      if (reloadBtn) {
+        // Click the reload button
+        reloadBtn.click();
+
+        // Scaler usually shows a confirmation modal. We need to find the "Reset!" button in it.
+        // We'll wait a bit for the modal to appear and then look for the confirm button.
+        setTimeout(() => {
+          if (!isExtensionValid()) return;
+          try {
+            const modals = document.querySelectorAll(".sr-modal");
+            modals.forEach((modal) => {
+              if (
+                modal.textContent.includes("Are you sure?") ||
+                modal.textContent.includes("Reset!") ||
+                modal.textContent.includes("Code would be replaced")
+              ) {
+                const confirmBtn = modal.querySelector(
+                  "a.dialog__action.btn-danger",
+                );
+                if (confirmBtn && confirmBtn.textContent.includes("Reset!")) {
+                  confirmBtn.click();
+                } else {
+                  // Fallback to searching all buttons if the specific selector fails
+                  const btns = Array.from(modal.querySelectorAll("button, a"));
+                  const resetBtn = btns.find(
+                    (b) => b.textContent.trim() === "Reset!",
+                  );
+                  if (resetBtn) resetBtn.click();
+                }
+              }
+            });
+          } catch (e) {
+            // Silently fail if context lost
+          }
+        }, 800);
+
+        // Update storage
+        if (isExtensionValid()) {
+          await chrome.storage.local.set({ [storageKey]: now });
+        }
+        // console.log(`[Scaler DOM Cleaner] Auto-reset code for question ${questionId}`);
+      } else {
+        // If button not found, retry after a short delay (page might still be rendering)
+        // Only retry once to avoid infinite loops if the button is truly missing
+        if (!window._practiceModeRetry) {
+          window._practiceModeRetry = true;
+          setTimeout(() => {
+            if (!isExtensionValid()) return;
+            handlePracticeMode();
+            window._practiceModeRetry = false;
+          }, 2000);
+        }
+      }
+    }
+  } catch (error) {
+    if (
+      !isExtensionValid() ||
+      (error.message && error.message.includes("context invalidated"))
+    ) {
+      return;
+    }
+    console.error("[Scaler DOM Cleaner] Error in practice mode:", error);
+  }
+}

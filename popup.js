@@ -27,6 +27,9 @@ const DEFAULT_SETTINGS = {
   // Enhancements
   "core-curriculum": true,
   "problem-search": true,
+  "practice-mode": false,
+  "practice-mode-days": 7,
+  "practice-mode-start": null,
 };
 
 // All toggle IDs mapped to their setting keys
@@ -46,6 +49,7 @@ const TOGGLE_MAP = {
   "toggle-sidebar-refer-banner": "sidebar-refer-banner",
   "toggle-core-curriculum": "core-curriculum",
   "toggle-problem-search": "problem-search",
+  "toggle-practice-mode": "practice-mode",
 };
 
 // Current settings state
@@ -64,8 +68,19 @@ async function loadSettings() {
       const toggle = document.getElementById(toggleId);
       if (toggle) {
         toggle.checked = currentSettings[settingKey] !== false;
+
+        // Special handling for practice mode options visibility
+        if (settingKey === "practice-mode") {
+          const optionsDiv = document.getElementById("practice-mode-options");
+          if (optionsDiv)
+            optionsDiv.style.display = toggle.checked ? "block" : "none";
+        }
       }
     });
+
+    // Update days input
+    const daysInput = document.getElementById("practice-mode-days");
+    if (daysInput) daysInput.value = currentSettings["practice-mode-days"] || 7;
   } catch (error) {
     console.error("Error loading settings:", error);
   }
@@ -82,6 +97,26 @@ async function handleToggleChange(toggleId, settingKey) {
   currentSettings[settingKey] = newValue;
 
   try {
+    // Special handling for practice mode
+    if (settingKey === "practice-mode") {
+      const optionsDiv = document.getElementById("practice-mode-options");
+      if (optionsDiv) optionsDiv.style.display = newValue ? "block" : "none";
+
+      if (newValue) {
+        // Turning on: set start time
+        currentSettings["practice-mode-start"] = Date.now();
+      } else {
+        // Turning off: clear reset history
+        chrome.storage.local.get(null, (items) => {
+          const keysToRemove = Object.keys(items).filter((k) =>
+            k.startsWith("reset_history_"),
+          );
+          chrome.storage.local.remove(keysToRemove);
+        });
+        currentSettings["practice-mode-start"] = null;
+      }
+    }
+
     // Save to Chrome storage immediately
     await chrome.storage.sync.set({ cleanerSettings: currentSettings });
 
@@ -100,9 +135,11 @@ async function handleToggleChange(toggleId, settingKey) {
     }
 
     // Show brief feedback based on feature type
-    const isEnhancement = ["core-curriculum", "problem-search"].includes(
-      settingKey,
-    );
+    const isEnhancement = [
+      "core-curriculum",
+      "problem-search",
+      "practice-mode",
+    ].includes(settingKey);
     if (isEnhancement) {
       showToast(newValue ? "Enabled ✓" : "Disabled ✓", "success");
     } else {
@@ -204,6 +241,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("reset-btn");
   if (resetBtn) {
     resetBtn.addEventListener("click", resetSettings);
+  }
+
+  // Practice mode days change handler
+  const daysInput = document.getElementById("practice-mode-days");
+  if (daysInput) {
+    daysInput.addEventListener("change", async () => {
+      const val = parseInt(daysInput.value) || 7;
+      currentSettings["practice-mode-days"] = val;
+      await chrome.storage.sync.set({ cleanerSettings: currentSettings });
+
+      // Notify content script
+      const tabs = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: "toggleSetting",
+          key: "practice-mode-days",
+          value: val,
+        });
+      }
+    });
   }
 
   // Add hover effect for toggle items

@@ -5,35 +5,35 @@
 
 :root {
   /* Color Palette */
-  --primary: #5865F2;
-  --primary-hover: #4752C4;
+  --primary: #5865f2;
+  --primary-hover: #4752c4;
   --primary-light: rgba(88, 101, 242, 0.1);
-  --accent: #10B981;
+  --accent: #10b981;
   --accent-light: rgba(16, 185, 129, 0.1);
-  --warning: #F59E0B;
-  --error: #EF4444;
-  
+  --warning: #f59e0b;
+  --error: #ef4444;
+
   /* Dark Theme */
-  --bg-primary: #0F0F14;
-  --bg-secondary: #16161D;
-  --bg-tertiary: #1E1E28;
-  --bg-card: #1A1A24;
+  --bg-primary: #0f0f14;
+  --bg-secondary: #16161d;
+  --bg-tertiary: #1e1e28;
+  --bg-card: #1a1a24;
   --bg-hover: #252530;
-  
+
   /* Text */
-  --text-primary: #FFFFFF;
-  --text-secondary: #A1A1AA;
-  --text-muted: #71717A;
-  
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+
   /* Borders */
-  --border: #27272F;
-  --border-light: #3F3F4A;
-  
+  --border: #27272f;
+  --border-light: #3f3f4a;
+
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  
+
   /* Spacing */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -48,7 +48,11 @@
 }
 
 body {
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Segoe UI",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   width: 360px;
@@ -83,7 +87,11 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 100%
+  );
   padding: 16px 20px;
   border-bottom: 1px solid var(--border);
 }
@@ -112,7 +120,7 @@ body {
 .logo h1 {
   font-size: 18px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--primary) 0%, #818CF8 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -209,12 +217,20 @@ body {
 
 /* Highlighted toggle items (new/powerful features) */
 .toggle-item.highlight {
-  background: linear-gradient(135deg, rgba(88, 101, 242, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(88, 101, 242, 0.08) 0%,
+    rgba(124, 58, 237, 0.08) 100%
+  );
   border-left: 2px solid var(--primary);
 }
 
 .toggle-item.highlight:hover {
-  background: linear-gradient(135deg, rgba(88, 101, 242, 0.12) 0%, rgba(124, 58, 237, 0.12) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(88, 101, 242, 0.12) 0%,
+    rgba(124, 58, 237, 0.12) 100%
+  );
 }
 
 .toggle-item.highlight .toggle-title {
@@ -239,6 +255,50 @@ body {
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.3;
+}
+
+/* Sub-options (indented settings) */
+.sub-options {
+  background: rgba(88, 101, 242, 0.03);
+  padding: 8px 14px 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sub-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sub-option-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.days-input {
+  width: 54px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 4px 6px;
+  font-size: 11px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.days-input:focus {
+  border-color: var(--primary);
+}
+
+.days-input::-webkit-inner-spin-button {
+  filter: invert(1);
+  opacity: 0.5;
 }
 
 /* Toggle Switch */
@@ -328,7 +388,8 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -409,7 +470,15 @@ body {
   animation: fadeIn 0.3s ease forwards;
 }
 
-.section:nth-child(1) { animation-delay: 0.05s; }
-.section:nth-child(2) { animation-delay: 0.1s; }
-.section:nth-child(3) { animation-delay: 0.15s; }
-.section:nth-child(4) { animation-delay: 0.2s; }
+.section:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.section:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.section:nth-child(4) {
+  animation-delay: 0.2s;
+}

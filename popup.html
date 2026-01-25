@@ -21,6 +21,59 @@
 
       <!-- Main Content -->
       <main class="content">
+        <!-- Enhancements Section -->
+        <section class="section">
+          <div class="section-header">
+            <h2>✨ Enhancements</h2>
+            <span class="section-badge accent">Added Features</span>
+          </div>
+
+          <div class="toggle-list">
+            <label class="toggle-item highlight">
+              <div class="toggle-info">
+                <span class="toggle-title">🔍 Problem Search Bar</span>
+                <span class="toggle-desc"
+                  >Search problems by name, topic, type, or day (Press / to
+                  focus)</span
+                >
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="toggle-problem-search" checked />
+                <span class="slider"></span>
+              </div>
+            </label>
+
+            <label class="toggle-item highlight">
+              <div class="toggle-info">
+                <span class="toggle-title">🎯 Practice Mode</span>
+                <span class="toggle-desc">Auto-reset code in assignments</span>
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="toggle-practice-mode" />
+                <span class="slider"></span>
+              </div>
+            </label>
+
+            <!-- Practice Mode Expiry Setting -->
+            <div
+              id="practice-mode-options"
+              class="sub-options"
+              style="display: none"
+            >
+              <div class="sub-option-row">
+                <span class="sub-option-label">Auto-disable after (days):</span>
+                <input
+                  type="number"
+                  id="practice-mode-days"
+                  class="days-input"
+                  min="1"
+                  max="30"
+                  value="7"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
         <!-- Global Section (Header Elements) -->
         <section class="section">
           <div class="section-header">
@@ -119,7 +172,7 @@
           <div class="toggle-list">
             <label class="toggle-item">
               <div class="toggle-info">
-                <span class="toggle-title">2025 Revisited Card</span>
+                <span class="toggle-title">Year Revisited Card</span>
                 <span class="toggle-desc"
                   >"Check out your year at SST" sidebar card</span
                 >
@@ -232,30 +285,6 @@
                   id="toggle-sidebar-refer-banner"
                   checked
                 />
-                <span class="slider"></span>
-              </div>
-            </label>
-          </div>
-        </section>
-
-        <!-- Enhancements Section -->
-        <section class="section">
-          <div class="section-header">
-            <h2>✨ Enhancements</h2>
-            <span class="section-badge accent">Added Features</span>
-          </div>
-
-          <div class="toggle-list">
-            <label class="toggle-item highlight">
-              <div class="toggle-info">
-                <span class="toggle-title">🔍 Problem Search Bar</span>
-                <span class="toggle-desc"
-                  >Search problems by name, topic, type, or day (Press / to
-                  focus)</span
-                >
-              </div>
-              <div class="toggle-switch">
-                <input type="checkbox" id="toggle-problem-search" checked />
                 <span class="slider"></span>
               </div>
             </label>
