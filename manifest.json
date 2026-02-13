@@ -1,9 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Scaler DOM Cleaner",
-  "version": "1.4.0",
-  "description": "Clean up Scaler Academy UI, search problems instantly & auto-reset codes with Practice Mode",
+  "name": "Scaler++",
+  "version": "1.5.0",
+  "description": "Enhance Scaler Academy: Declutter UI, search 1000+ problems instantly, auto-reset code with Practice Mode & get instant LeetCode links with smart caching",
   "permissions": ["storage"],
+  "host_permissions": ["https://leetcode.com/*", "https://www.google.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -12,7 +16,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "Scaler DOM Cleaner Settings"
+    "default_title": "Scaler++ Settings"
   },
   "content_scripts": [
     {
@@ -26,5 +30,11 @@
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/leetcode_icon.png"],
+      "matches": ["https://www.scaler.com/*", "https://scaler.com/*"]
+    }
+  ]
 }

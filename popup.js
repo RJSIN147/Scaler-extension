@@ -1,5 +1,5 @@
 // ============================================
-// Scaler DOM Cleaner - Popup Script
+// Scaler++ - Popup Script
 // Instant Apply Mode - No Save Button Needed
 // ============================================
 
@@ -27,6 +27,7 @@ const DEFAULT_SETTINGS = {
   // Enhancements
   "core-curriculum": true,
   "problem-search": true,
+  "leetcode-link": true,
   "practice-mode": false,
   "practice-mode-days": 7,
   "practice-mode-start": null,
@@ -49,6 +50,7 @@ const TOGGLE_MAP = {
   "toggle-sidebar-refer-banner": "sidebar-refer-banner",
   "toggle-core-curriculum": "core-curriculum",
   "toggle-problem-search": "problem-search",
+  "toggle-leetcode-link": "leetcode-link",
   "toggle-practice-mode": "practice-mode",
 };
 
@@ -138,6 +140,7 @@ async function handleToggleChange(toggleId, settingKey) {
     const isEnhancement = [
       "core-curriculum",
       "problem-search",
+      "leetcode-link",
       "practice-mode",
     ].includes(settingKey);
     if (isEnhancement) {
