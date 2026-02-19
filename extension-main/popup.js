@@ -31,6 +31,7 @@ const DEFAULT_SETTINGS = {
   "practice-mode": false,
   "practice-mode-days": 7,
   "practice-mode-start": null,
+  "join-session": true,
 
   // Assignment
   companion: true,
@@ -55,6 +56,7 @@ const TOGGLE_MAP = {
   "toggle-problem-search": "problem-search",
   "toggle-leetcode-link": "leetcode-link",
   "toggle-practice-mode": "practice-mode",
+  "toggle-join-session": "join-session",
   "toggle-companion": "companion",
 };
 
@@ -146,6 +148,7 @@ async function handleToggleChange(toggleId, settingKey) {
       "problem-search",
       "leetcode-link",
       "practice-mode",
+      "join-session",
     ].includes(settingKey);
     if (isEnhancement) {
       showToast(newValue ? "Enabled ✓" : "Disabled ✓", "success");

@@ -3,7 +3,7 @@
 // All logic is split across:
 //   cleaner/  → selectors, cleanerEngine, modalHandler, sidebarHandler
 //   core/     → settings, styleInjector, urlObserver
-//   features/ → problemSearch, practiceMode, leetcodeLink
+//   features/ → problemSearch, practiceMode, leetcodeLink, joinClassButton
 //   utils/    → domUtils, stringUtils
 // ============================================
 
@@ -59,6 +59,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           existingLink.remove();
         }
       }
+    } else if (key === "join-session") {
+      // Toggle Join Session buttons
+      if (value) {
+        initJoinSessionButtons();
+      } else {
+        // Remove any injected buttons and restore "View Details" text
+        document.querySelectorAll(".scaler-join-session-btn").forEach((btn) => {
+          // Recreate the original "View Details" span
+          const span = document.createElement("span");
+          span.className = "_3cg2nc-UIVR1CzIB7nNQ8Z";
+          span.textContent = "View Details";
+          btn.replaceWith(span);
+        });
+        // Reset injection guards so they can be re-injected if re-enabled
+        document
+          .querySelectorAll('[data-join-session-injected="true"]')
+          .forEach((card) => {
+            delete card.dataset.joinSessionInjected;
+          });
+        // Disconnect observer so it stops watching
+        if (window._joinSessionObserver) {
+          window._joinSessionObserver.disconnect();
+          window._joinSessionObserver = null;
+        }
+      }
     } else {
       updateVisibilityForKey(key, value);
     }
@@ -86,6 +111,9 @@ window.addEventListener("load", async () => {
 
   // Initialize LeetCode link
   setTimeout(initLeetCodeLink, 2000);
+
+  // Initialize Join Session buttons on dashboard
+  setTimeout(initJoinSessionButtons, 1500);
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -123,4 +151,7 @@ handleUrlChange = function () {
   if (isAssignmentProblemPage()) {
     setTimeout(initLeetCodeLink, 2000);
   }
+
+  // Re-inject Join Session buttons on any dashboard navigation
+  setTimeout(initJoinSessionButtons, 1500);
 };
