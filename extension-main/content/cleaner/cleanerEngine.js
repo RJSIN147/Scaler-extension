@@ -45,6 +45,7 @@ function updateVisibilityForKey(key, hide) {
       ...TODOS_PAGE_SELECTORS,
       ...GLOBAL_SELECTORS,
       ...SIDEBAR_SELECTORS,
+      ...ASSIGNMENT_SELECTORS,
     ];
     const configs = allConfigs.filter((c) => c.key === key);
     configs.forEach((config) => {
@@ -102,6 +103,7 @@ function applyAllSettings() {
   }
   processElementsByConfig(GLOBAL_SELECTORS);
   processElementsByConfig(SIDEBAR_SELECTORS);
+  processElementsByConfig(ASSIGNMENT_SELECTORS);
 
   // Handle core curriculum links
   handleCoreCurriculumVisibility();
@@ -284,6 +286,11 @@ function cleanupSidebar() {
   processElementsByConfig(SIDEBAR_SELECTORS);
 }
 
+function cleanupAssignment() {
+  if (!isAssignmentProblemPage()) return;
+  processElementsByConfig(ASSIGNMENT_SELECTORS);
+}
+
 /**
  * Run all cleanup tasks
  */
@@ -294,6 +301,7 @@ async function runCleanup() {
   cleanupGlobal();
   cleanupTodosPage();
   cleanupSidebar();
+  cleanupAssignment();
   setupSidebarObserver();
   setupModalObserver();
   handlePracticeMode();

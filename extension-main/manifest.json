@@ -6,7 +6,7 @@
   "permissions": ["storage"],
   "host_permissions": ["https://leetcode.com/*", "https://www.google.com/*"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background/background.js"
   },
   "action": {
     "default_popup": "popup.html",
@@ -22,19 +22,19 @@
     {
       "matches": ["https://www.scaler.com/*", "https://scaler.com/*"],
       "js": [
-        "cleaner/selectors.js",
-        "core/settings.js",
-        "core/styleInjector.js",
-        "utils/domUtils.js",
-        "utils/stringUtils.js",
-        "cleaner/cleanerEngine.js",
-        "cleaner/modalHandler.js",
-        "cleaner/sidebarHandler.js",
-        "core/urlObserver.js",
-        "features/problemSearch.js",
-        "features/practiceMode.js",
-        "features/leetcodeLink.js",
-        "content.js"
+        "content/cleaner/selectors.js",
+        "content/core/settings.js",
+        "content/core/styleInjector.js",
+        "content/utils/domUtils.js",
+        "content/utils/stringUtils.js",
+        "content/features/leetcodeLink.js",
+        "content/cleaner/cleanerEngine.js",
+        "content/cleaner/modalHandler.js",
+        "content/cleaner/sidebarHandler.js",
+        "content/core/urlObserver.js",
+        "content/features/problemSearch.js",
+        "content/features/practiceMode.js",
+        "content/content.js"
       ],
       "run_at": "document_idle"
     }

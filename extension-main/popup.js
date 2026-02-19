@@ -31,6 +31,9 @@ const DEFAULT_SETTINGS = {
   "practice-mode": false,
   "practice-mode-days": 7,
   "practice-mode-start": null,
+
+  // Assignment
+  companion: true,
 };
 
 // All toggle IDs mapped to their setting keys
@@ -52,6 +55,7 @@ const TOGGLE_MAP = {
   "toggle-problem-search": "problem-search",
   "toggle-leetcode-link": "leetcode-link",
   "toggle-practice-mode": "practice-mode",
+  "toggle-companion": "companion",
 };
 
 // Current settings state

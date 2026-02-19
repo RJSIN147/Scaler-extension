@@ -35,6 +35,9 @@ const DEFAULT_SETTINGS = {
   "practice-mode": false,
   "practice-mode-days": 7,
   "practice-mode-start": null,
+
+  // Assignments
+  companion: true,
 };
 
 // Elements config for /academy/mentee-dashboard/todos page
@@ -137,9 +140,20 @@ const SIDEBAR_SELECTORS = [
   },
 ];
 
+const ASSIGNMENT_SELECTORS = [
+  {
+    key: "companion",
+    selector: "div.Companion-module_root__ZGYyu",
+    verify: (el) =>
+      el.querySelector(".SolveBotWidget-module_container__Sttx-") !== null ||
+      el.querySelector('img[alt="solve bot icon"]') !== null,
+  },
+];
+
 // All selectors combined for easy iteration
 const ALL_SELECTORS = [
   ...TODOS_PAGE_SELECTORS,
   ...GLOBAL_SELECTORS,
   ...SIDEBAR_SELECTORS,
+  ...ASSIGNMENT_SELECTORS,
 ];
