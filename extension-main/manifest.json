@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Scaler++",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Enhance Scaler Academy: Declutter UI, search 1000+ problems instantly & get instant LeetCode links with smart caching",
   "permissions": ["storage"],
   "host_permissions": ["https://leetcode.com/*", "https://www.google.com/*"],
@@ -21,7 +21,21 @@
   "content_scripts": [
     {
       "matches": ["https://www.scaler.com/*", "https://scaler.com/*"],
-      "js": ["content.js"],
+      "js": [
+        "cleaner/selectors.js",
+        "core/settings.js",
+        "core/styleInjector.js",
+        "utils/domUtils.js",
+        "utils/stringUtils.js",
+        "cleaner/cleanerEngine.js",
+        "cleaner/modalHandler.js",
+        "cleaner/sidebarHandler.js",
+        "core/urlObserver.js",
+        "features/problemSearch.js",
+        "features/practiceMode.js",
+        "features/leetcodeLink.js",
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
