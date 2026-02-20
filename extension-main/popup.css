@@ -422,6 +422,20 @@ body {
   border-color: var(--border-light);
 }
 
+#github-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#github-btn img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
 /* Toast Notification */
 .toast {
   position: fixed;

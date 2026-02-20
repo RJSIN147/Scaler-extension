@@ -256,6 +256,16 @@ document.addEventListener("DOMContentLoaded", () => {
     resetBtn.addEventListener("click", resetSettings);
   }
 
+  // GitHub button handler
+  const githubBtn = document.getElementById("github-btn");
+  if (githubBtn) {
+    githubBtn.addEventListener("click", () => {
+      chrome.tabs.create({
+        url: "https://github.com/Ritesh381/Scaler-extension",
+      });
+    });
+  }
+
   // Practice mode days change handler
   const daysInput = document.getElementById("practice-mode-days");
   if (daysInput) {

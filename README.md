@@ -3,42 +3,51 @@
 Reclaim your focus! Declutter the Scaler Academy UI and enhance your practice sessions with this lightweight, privacy-first Chrome extension.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-green?logo=googlechrome)](https://chromewebstore.google.com/detail/scaler-dom-cleaner/fpnleckmeeahiognlpphbadchogfjgcg)
-[![Version](https://img.shields.io/badge/Version-1.6.0-blue)]()
+[![Version](https://img.shields.io/badge/Version-1.7.0-blue)]()
 [![License](https://img.shields.io/badge/License-MIT-yellow)]()
 
 ---
 
-## 🚀 NEW ENHANCEMENTS
+## 🚀 ENHANCEMENTS
+
+### 🛡️ Smart Companion Bypass _(NEW in v1.6.0)_
+
+Bypass Scaler's companion-mode restrictions **only when you need to** — with zero impact on everyday browser performance.
+
+- **⚡ On-Demand** — Activates IP-spoofing headers the instant you navigate to a join-session URL (`/session?joinSession=1`), then **automatically removes them after 5 seconds**.
+- **🚀 Zero Slowdown** — Unlike always-on VPNs or proxy extensions, rules are active for ≈5 s per session join. The browser runs at full speed the rest of the time.
+- **🔀 Random IP Pool** — Picks a random spoofed IP from a pool of 8 addresses on every activation.
+- **🎛️ Toggle Control** — Enable/disable from the popup settings at any time.
+
+### 🚀 Direct Join Session
+
+Replaces the "View Details" text on live class cards with a direct **"Join Session"** button.
+
+- **Time-Gated** - Only appears when the class is currently live.
+- **Frictionless** - One click to join the session directly from your dashboard.
+- **Dynamic Updates** - Automatically detects new class cards loaded after navigation.
 
 ### 🔗 LeetCode Integration for Assignments
 
 Automatically detects assignment problems and adds a **direct link** to the corresponding LeetCode problem with **intelligent caching** for instant results.
 
-- **⚡ Smart Caching** - First search takes 2-5s, subsequent visits are instant (~100ms)!
-- **🧠 Intelligent Matching** - Uses LeetCode's GraphQL API with Google search fallback
-- **💾 Persistent Cache** - 30-day cache with auto-expiration
-- **🎨 Beautiful UI** - Elegant link with LeetCode icon and smooth hover effects
-- **🔄 Seamless** - Opens in new tab for uninterrupted workflow
+- **⚡ Smart Caching** - First search takes 2-5 s, subsequent visits are instant (~100 ms).
+- **🧠 Intelligent Matching** - LeetCode GraphQL API with Google Search fallback.
+- **💾 Persistent Cache** - 30-day cache with auto-expiration.
+- **🎨 Beautiful UI** - Elegant link with LeetCode icon and smooth hover effects.
+- **🔄 Seamless** - Opens in a new tab for an uninterrupted workflow.
 
-### Practice Mode
+### 🎯 Practice Mode
 
-Automatically resets the code editor in assignments if not touched for 5+ hours. Includes a customizable auto-disable timer (1-30 days) and tracks manual resets to prevent accidental spoilers.
+Automatically resets the code editor in assignments if not touched for 5+ hours. Includes a customizable auto-disable timer (1–30 days) and tracks manual resets to prevent accidental spoilers.
 
-### Instant Problem Search
+### 🔍 Instant Problem Search
 
 Search 1000+ problems instantly by name, topic, type, or day.
 
 - Press `/` to focus instantly.
 - Real-time filtering as you type.
 - Smart highlighting for matches.
-
-### 🚀 Direct Join Session
-
-Replaces the "View Details" text on live class cards with a direct "Join Session" button.
-
-- **Time-Gated** - Only appears when the class is currently live.
-- **Frictionless** - One click to join the session directly from your dashboard.
-- **Dynamic Updates** - Automatically detects when new class cards are loaded.
 
 ---
 
@@ -63,7 +72,8 @@ Replaces the "View Details" text on live class cards with a direct "Join Session
 ## ✨ KEY BENEFITS
 
 - ✅ **Instant Apply** - Settings take effect immediately without a page reload.
-- ✅ **Smart Caching** - LeetCode links load instantly on revisits (20-50x faster).
+- ✅ **Smart Bypass** - Companion mode bypassed on-demand with zero permanent overhead.
+- ✅ **Smart Caching** - LeetCode links load instantly on revisits (20-50× faster).
 - ✅ **Lightweight & Fast** - Native performance with no external dependencies.
 - ✅ **Privacy Centric** - No data collection; works entirely via local storage.
 - ✅ **Sync Support** - Your preferences are saved automatically across devices.
@@ -75,10 +85,40 @@ Replaces the "View Details" text on live class cards with a direct "Join Session
 1. **Install** from the Chrome Web Store or load unpacked in Developer Mode.
 2. Click the **extension icon** to toggle features ON/OFF.
 3. Use `/` on the problems page to start searching.
+4. Click **Join Session** on a live class card — the bypass activates automatically.
+
+---
+
+## 🏗️ Architecture
+
+```
+extension-main/
+├── manifest.json
+├── popup.html / popup.css / popup.js
+├── background/
+│   ├── background.js        ← Service worker entry point (importScripts only)
+│   ├── companionBypass.js   ← Smart Companion Bypass logic
+│   └── leetcodeLink.js      ← LeetCode search & verification
+└── content/
+    ├── content.js           ← Entry point & message handler
+    ├── core/                ← settings, styleInjector, urlObserver
+    ├── cleaner/             ← selectors, cleanerEngine, modalHandler, sidebarHandler
+    ├── features/            ← problemSearch, practiceMode, leetcodeLink,
+    │                           joinClassButton, companionBypass
+    └── utils/               ← domUtils, stringUtils
+```
 
 ---
 
 ## 📝 Changelog
+
+### v1.7.0 🛡️ Smart Companion Bypass Edition
+
+- **🛡️ Smart Companion Bypass**: Activates IP-spoofing headers for ~5 s when joining a session, then removes them automatically — zero impact on normal browsing speed.
+- **⚡ On-Demand Trigger**: Detects `/session?joinSession=1` URL in the background via `chrome.tabs.onUpdated` — no content-script involvement needed.
+- **🔀 Random IP Pool**: Rotates across 8 spoofed IPs on every activation.
+- **🏗️ Modular Background**: Background service worker split into `companionBypass.js` and `leetcodeLink.js` for cleaner separation of concerns.
+- **🎛️ Toggle Control**: Enable/disable Companion Bypass independently from the popup.
 
 ### v1.6.0 🚀 Direct Join Session Edition
 
@@ -86,30 +126,28 @@ Replaces the "View Details" text on live class cards with a direct "Join Session
 - **⏱️ Time-Gating**: Smartly displays the button only when the class is currently active.
 - **🎛️ Toggle Control**: Enable/disable Join Session buttons from the popup settings.
 
-### v1.5.0 🚀 LeetCode Integration Edition
+### v1.5.0 🔗 LeetCode Integration Edition
 
-- **🔗 LeetCode Integration**: Automatically finds and links to corresponding LeetCode problems on assignment pages
-- **⚡ Smart Caching System**: Instant results for previously searched problems (100ms vs 2-5s)
-- **💾 Persistent Cache**: 30-day cache with auto-expiration and intelligent cleanup
-- **🎛️ Toggle Control**: Enable/disable LeetCode links from the popup settings
-- **🧠 Intelligent Matching**: Uses LeetCode GraphQL API with Google search fallback
-- **🎨 Beautiful UI**: Elegant design with LeetCode icon and smooth animations
-- **📦 Production Ready**: Clean console output with error tracking
-- **♻️ Rebranded to Scaler++**: Updated extension name to reflect enhanced feature set
+- **🔗 LeetCode Integration**: Automatically finds and links to corresponding LeetCode problems on assignment pages.
+- **⚡ Smart Caching System**: Instant results for previously searched problems (100 ms vs 2-5 s).
+- **💾 Persistent Cache**: 30-day cache with auto-expiration and intelligent cleanup.
+- **🎛️ Toggle Control**: Enable/disable LeetCode links from the popup settings.
+- **🧠 Intelligent Matching**: Uses LeetCode GraphQL API with Google Search fallback.
+- **♻️ Rebranded to Scaler++**: Updated extension name to reflect enhanced feature set.
 
 ### v1.4.0
 
 - **Added Practice Mode**: Auto-reset code in assignments with customizable expiration.
 - **Added Storage Cleanup**: Automatically clears reset history when Practice Mode is disabled.
 - **Improved UI**: New sub-options for Practice Mode with sleek dark-themed inputs.
-- **Bug Fixes**: Resolved "Extension context invalidated" errors and improved modal interaction reliability.
+- **Bug Fixes**: Resolved "Extension context invalidated" errors and improved modal reliability.
 
 ### v1.3.0
 
-- Added Problem Search Bar with keyboard shortcut (/)
+- Added Problem Search Bar with keyboard shortcut (`/`).
 - Moved Core Curriculum to header and updated UI icons.
 
 ---
 
 Made with ❤️ by **Ritesh Prajapati** for the Scaler community.
-_Focus on what matters—your learning journey!_
+_Focus on what matters — your learning journey!_

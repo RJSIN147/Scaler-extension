@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Scaler++",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Enhance Scaler Academy: Declutter UI, search 1000+ problems instantly & get instant LeetCode links with smart caching",
   "permissions": ["storage", "declarativeNetRequest", "declarativeNetRequestWithHostAccess", "tabs"],
   "host_permissions": [
