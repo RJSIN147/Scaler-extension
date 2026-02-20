@@ -3,7 +3,7 @@
 Reclaim your focus! Declutter the Scaler Academy UI and enhance your practice sessions with this lightweight, privacy-first Chrome extension.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-green?logo=googlechrome)](https://chromewebstore.google.com/detail/scaler-dom-cleaner/fpnleckmeeahiognlpphbadchogfjgcg)
-[![Version](https://img.shields.io/badge/Version-1.5.0-blue)]()
+[![Version](https://img.shields.io/badge/Version-1.6.0-blue)]()
 [![License](https://img.shields.io/badge/License-MIT-yellow)]()
 
 ---
@@ -31,6 +31,14 @@ Search 1000+ problems instantly by name, topic, type, or day.
 - Press `/` to focus instantly.
 - Real-time filtering as you type.
 - Smart highlighting for matches.
+
+### 🚀 Direct Join Session
+
+Replaces the "View Details" text on live class cards with a direct "Join Session" button.
+
+- **Time-Gated** - Only appears when the class is currently live.
+- **Frictionless** - One click to join the session directly from your dashboard.
+- **Dynamic Updates** - Automatically detects when new class cards are loaded.
 
 ---
 
@@ -71,6 +79,12 @@ Search 1000+ problems instantly by name, topic, type, or day.
 ---
 
 ## 📝 Changelog
+
+### v1.6.0 🚀 Direct Join Session Edition
+
+- **🚀 Direct Join Session**: Replaces the "View Details" button with an actionable "Join Session" button for live classes directly on the dashboard.
+- **⏱️ Time-Gating**: Smartly displays the button only when the class is currently active.
+- **🎛️ Toggle Control**: Enable/disable Join Session buttons from the popup settings.
 
 ### v1.5.0 🚀 LeetCode Integration Edition
 
