@@ -9,7 +9,7 @@
 // ============================================================
 
 const BYPASS_RULE_IDS = [101, 102, 103, 104, 105, 106]; // IDs offset from 100 to avoid clashes
-const BYPASS_DURATION_MS = 3000; // how long rules stay active (ms)
+const BYPASS_DURATION_MS = 5000; // how long rules stay active (ms)
 
 let _bypassTimer = null; // active auto-deactivation timer handle
 
