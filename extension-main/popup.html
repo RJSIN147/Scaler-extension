@@ -31,14 +31,26 @@
           <div class="toggle-list">
             <label class="toggle-item highlight">
               <div class="toggle-info">
-                <span class="toggle-title">🔍 Problem Search Bar</span>
+                <span class="toggle-title">🛡️ Companion Mode Bypass</span>
+                <span class="toggle-desc">
+                  Bypass companion-mode while Joining classes
+                </span>
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="toggle-companion-bypass" checked />
+                <span class="slider"></span>
+              </div>
+            </label>
+
+            <label class="toggle-item highlight">
+              <div class="toggle-info">
+                <span class="toggle-title">🔗 LeetCode Link</span>
                 <span class="toggle-desc"
-                  >Search problems by name, topic, type, or day (Press / to
-                  focus)</span
+                  >Show LeetCode link next to assignment problems</span
                 >
               </div>
               <div class="toggle-switch">
-                <input type="checkbox" id="toggle-problem-search" checked />
+                <input type="checkbox" id="toggle-leetcode-link" checked />
                 <span class="slider"></span>
               </div>
             </label>
@@ -53,7 +65,6 @@
                 <span class="slider"></span>
               </div>
             </label>
-
             <!-- Practice Mode Expiry Setting -->
             <div
               id="practice-mode-options"
@@ -75,16 +86,18 @@
 
             <label class="toggle-item highlight">
               <div class="toggle-info">
-                <span class="toggle-title">🔗 LeetCode Link</span>
+                <span class="toggle-title">🔍 Problem Search Bar</span>
                 <span class="toggle-desc"
-                  >Show LeetCode link next to assignment problems</span
+                  >Search problems by name, topic, type, or day (Press / to
+                  focus)</span
                 >
               </div>
               <div class="toggle-switch">
-                <input type="checkbox" id="toggle-leetcode-link" checked />
+                <input type="checkbox" id="toggle-problem-search" checked />
                 <span class="slider"></span>
               </div>
             </label>
+
             <label class="toggle-item highlight">
               <div class="toggle-info">
                 <span class="toggle-title">🚀 Join Session Button</span>
@@ -95,20 +108,6 @@
               </div>
               <div class="toggle-switch">
                 <input type="checkbox" id="toggle-join-session" checked />
-                <span class="slider"></span>
-              </div>
-            </label>
-
-            <label class="toggle-item highlight">
-              <div class="toggle-info">
-                <span class="toggle-title">🛡️ Companion Bypass</span>
-                <span class="toggle-desc"
-                  >Bypass companion-mode restrictions for 5 s when joining a
-                  session</span
-                >
-              </div>
-              <div class="toggle-switch">
-                <input type="checkbox" id="toggle-companion-bypass" checked />
                 <span class="slider"></span>
               </div>
             </label>
@@ -203,7 +202,7 @@
         </section>
 
         <!-- Assignment page -->
-        <section>
+        <section class="section">
           <div class="section-header">
             <h2>🎯 Assignment</h2>
             <span class="section-badge">Assignment Page</span>
