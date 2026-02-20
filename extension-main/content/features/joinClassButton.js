@@ -1,7 +1,9 @@
 // ============================================
 // features/joinClassButton.js
 // Adds a "Join Session" button directly on the dashboard class cards,
-// but ONLY when the current time is within the class's scheduled window.
+// but ONLY when:
+//   1. The active date tab matches today's date.
+//   2. The current time is within the class's scheduled window.
 // ============================================
 
 /**
@@ -51,6 +53,80 @@ function isClassLiveNow(startStr, endStr) {
 }
 
 /**
+ * Read the currently active date tab on the dashboard.
+ * The tabs look like:
+ *   <div class="tabs__header ...">
+ *     <div class="tabs__tab ...">20 Feb</div>
+ *     <div class="tabs__tab ... tabs__tab--active ...">23 Feb</div>
+ *     ...
+ *   </div>
+ *
+ * Returns a Date set to midnight of the active tab's date,
+ * or null if the tab cannot be found / parsed.
+ *
+ * @returns {Date|null}
+ */
+function getActiveDashboardDate() {
+  const activeTab = document.querySelector(".tabs__tab--active");
+  if (!activeTab) return null;
+
+  const text = activeTab.textContent.trim(); // e.g. "23 Feb"
+  const match = text.match(/^(\d{1,2})\s+([A-Za-z]+)$/);
+  if (!match) return null;
+
+  const day = parseInt(match[1], 10);
+  const monthStr = match[2];
+
+  // Map abbreviated / full month names to 0-indexed month numbers
+  const MONTHS = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ];
+  const monthIndex = MONTHS.findIndex((m) =>
+    monthStr.toLowerCase().startsWith(m),
+  );
+  if (monthIndex === -1) return null;
+
+  // Infer the year: use current year, but if the resulting date is more than
+  // 60 days in the past it's likely a year-boundary edge case — bump to next year.
+  const today = new Date();
+  let year = today.getFullYear();
+  const candidate = new Date(year, monthIndex, day);
+  if (today - candidate > 60 * 24 * 60 * 60 * 1000) {
+    year += 1;
+  }
+
+  return new Date(year, monthIndex, day, 0, 0, 0, 0);
+}
+
+/**
+ * Returns true when the active dashboard date tab is today.
+ *
+ * @returns {boolean}
+ */
+function isActiveDateToday() {
+  const activeDate = getActiveDashboardDate();
+  if (!activeDate) return false;
+
+  const today = new Date();
+  return (
+    activeDate.getFullYear() === today.getFullYear() &&
+    activeDate.getMonth() === today.getMonth() &&
+    activeDate.getDate() === today.getDate()
+  );
+}
+
+/**
  * Extract the start and end time strings from a classroom card element.
  * The card contains:
  *   <div class="_1EQZYaGMSYVhKTiIKY-qXP">
@@ -88,6 +164,9 @@ function extractClassTimes(card) {
  * Cards whose class window has not started or has already ended are skipped.
  */
 function injectJoinSessionButtons() {
+  // --- Date gate: only run when the active tab is today ---
+  if (!isActiveDateToday()) return;
+
   const classroomCards = document.querySelectorAll(
     'a.me-cr-classroom-url[data-cy="classroom-link"]',
   );
