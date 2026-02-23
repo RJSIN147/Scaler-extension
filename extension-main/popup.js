@@ -33,6 +33,7 @@ const DEFAULT_SETTINGS = {
   "practice-mode-start": null,
   "join-session": true,
   "companion-bypass": true,
+  "subject-sort": true,
 
   // Assignment
   companion: true,
@@ -60,6 +61,7 @@ const TOGGLE_MAP = {
   "toggle-join-session": "join-session",
   "toggle-companion-bypass": "companion-bypass",
   "toggle-companion": "companion",
+  "toggle-subject-sort": "subject-sort",
 };
 
 // Current settings state
@@ -152,6 +154,7 @@ async function handleToggleChange(toggleId, settingKey) {
       "practice-mode",
       "join-session",
       "companion-bypass",
+      "subject-sort",
     ].includes(settingKey);
     if (isEnhancement) {
       showToast(newValue ? "Enabled ✓" : "Disabled ✓", "success");

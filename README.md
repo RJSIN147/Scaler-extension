@@ -27,6 +27,15 @@ Replaces the "View Details" text on live class cards with a direct **"Join Sessi
 - **Frictionless** - One click to join the session directly from your dashboard.
 - **Dynamic Updates** - Automatically detects new class cards loaded after navigation.
 
+### 📚 Subject Sort
+
+Automatically organizes your curriculum subjects into **Core** and **Other** categories for a cleaner learning experience.
+
+- **🧠 Smart Categorization** - Reads subject titles and automatically segregates clubs, miscellaneous, and SST components.
+- **🏷️ Visual Badges** - Adds sleek "Core" and "Other" tags next to subject numbers for instant recognition.
+- **🔢 Auto-Sequencing** - Corrects the "Subject - N" numbers dynamically based on the new sorted order.
+- **🔌 Native Compatibility** - Seamlessly integrates with Scaler's native React framework without breaking semester switching.
+
 ### 🔗 LeetCode Integration for Assignments
 
 Automatically detects assignment problems and adds a **direct link** to the corresponding LeetCode problem with **intelligent caching** for instant results.
@@ -104,7 +113,7 @@ extension-main/
     ├── core/                ← settings, styleInjector, urlObserver
     ├── cleaner/             ← selectors, cleanerEngine, modalHandler, sidebarHandler
     ├── features/            ← problemSearch, practiceMode, leetcodeLink,
-    │                           joinClassButton, companionBypass
+    │                           joinClassButton, companionBypass, subjectSort
     └── utils/               ← domUtils, stringUtils
 ```
 

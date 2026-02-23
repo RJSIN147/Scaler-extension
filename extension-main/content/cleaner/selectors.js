@@ -38,6 +38,7 @@ const DEFAULT_SETTINGS = {
 
   // Assignments
   companion: true,
+  "subject-sort": true,
 };
 
 // Elements config for /academy/mentee-dashboard/todos page

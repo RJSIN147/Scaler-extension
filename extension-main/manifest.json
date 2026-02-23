@@ -3,7 +3,12 @@
   "name": "Scaler++",
   "version": "1.6.1",
   "description": "Enhance Scaler Academy: Declutter UI, search 1000+ problems instantly & get instant LeetCode links with smart caching",
-  "permissions": ["storage", "declarativeNetRequest", "declarativeNetRequestWithHostAccess", "tabs"],
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "tabs"
+  ],
   "host_permissions": [
     "https://leetcode.com/*",
     "https://www.google.com/*",
@@ -41,6 +46,7 @@
         "content/features/problemSearch.js",
         "content/features/practiceMode.js",
         "content/features/joinClassButton.js",
+        "content/features/subjectSort.js",
         "content/content.js"
       ],
       "run_at": "document_idle"

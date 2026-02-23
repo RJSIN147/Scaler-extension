@@ -84,6 +84,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           window._joinSessionObserver = null;
         }
       }
+    } else if (key === "subject-sort") {
+      if (value) {
+        initSubjectSort();
+      } else {
+        restoreSubjectSort();
+      }
     } else {
       updateVisibilityForKey(key, value);
     }
@@ -154,4 +160,9 @@ handleUrlChange = function () {
 
   // Re-inject Join Session buttons on any dashboard navigation
   setTimeout(initJoinSessionButtons, 1500);
+
+  // Re-initialize Subject Sort on curriculum navigation
+  if (window.location.href.includes("/core-curriculum")) {
+    setTimeout(initSubjectSort, 1500);
+  }
 };
