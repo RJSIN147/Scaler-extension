@@ -19,7 +19,7 @@
     "https://www.googleapis.com/*"
   ],
   "oauth2": {
-    "client_id": "47969293968-3561n3j1pra4ovcsdd56m2r6n4e33o97.apps.googleusercontent.com",
+    "client_id": "47969293968-eeacp3p89r5l6jslf3re48iimcgj3mo1.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/calendar.events"
     ]
@@ -39,7 +39,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.scaler.com/*", "https://scaler.com/*"],
+      "matches": [
+        "https://www.scaler.com/*",
+        "https://scaler.com/*"
+      ],
       "js": [
         "content/cleaner/selectors.js",
         "content/core/settings.js",
@@ -69,8 +72,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["icons/leetcode_icon.png"],
-      "matches": ["https://www.scaler.com/*", "https://scaler.com/*"]
+      "resources": [
+        "icons/leetcode_icon.png"
+      ],
+      "matches": [
+        "https://www.scaler.com/*",
+        "https://scaler.com/*"
+      ]
     }
   ]
 }
