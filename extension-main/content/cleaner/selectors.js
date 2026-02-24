@@ -13,6 +13,7 @@ const DEFAULT_SETTINGS = {
   "2025-revisited": true,
   "referral-stats": true,
   "mess-fee": true,
+  attendance: true,
   "refer-earn": true,
   "scaler-coins": true,
   "continue-watching": true,
@@ -39,6 +40,7 @@ const DEFAULT_SETTINGS = {
   // Assignments
   companion: true,
   "subject-sort": true,
+  "mess-fee-filled-timestamp": null,
 };
 
 // Elements config for /academy/mentee-dashboard/todos page
@@ -58,12 +60,32 @@ const TODOS_PAGE_SELECTORS = [
         ?.textContent.includes("Referral Stats"),
   },
   {
+    key: "attendance",
+    selector: "div.progressed-performance",
+    verify: (el) =>
+      el
+        .querySelector(".progressed-performance__title")
+        ?.textContent.includes("Attendance"),
+  },
+  {
     key: "mess-fee",
     selector: "a.mentee-card",
     verify: (el) => {
       const isMessFee = el.textContent.includes("Mess Fee");
       if (!isMessFee) return false;
       const today = new Date();
+
+      // Check if user filled it manually within the last 12 days
+      const filledTimestamp = currentSettings["mess-fee-filled-timestamp"];
+      if (filledTimestamp) {
+        const daysSince =
+          (today.getTime() - new Date(filledTimestamp).getTime()) /
+          (1000 * 60 * 60 * 24);
+        if (daysSince <= 12) {
+          return true; // It matches the criteria to be hidden because it is filled
+        }
+      }
+
       const lastDayOfMonth = new Date(
         today.getFullYear(),
         today.getMonth() + 1,

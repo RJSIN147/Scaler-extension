@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
   "2025-revisited": true,
   "referral-stats": true,
   "mess-fee": true,
+  attendance: true,
   "refer-earn": true,
   "scaler-coins": true,
   "continue-watching": true,
@@ -34,6 +35,7 @@ const DEFAULT_SETTINGS = {
   "join-session": true,
   "companion-bypass": true,
   "subject-sort": true,
+  "mess-fee-filled-timestamp": null,
 
   // Assignment
   companion: true,
@@ -44,6 +46,7 @@ const TOGGLE_MAP = {
   "toggle-2025-revisited": "2025-revisited",
   "toggle-referral-stats": "referral-stats",
   "toggle-mess-fee": "mess-fee",
+  "toggle-attendance": "attendance",
   "toggle-refer-earn": "refer-earn",
   "toggle-scaler-coins": "scaler-coins",
   "toggle-continue-watching": "continue-watching",
@@ -240,6 +243,13 @@ function showToast(message, type = "success") {
  * Initialize popup
  */
 document.addEventListener("DOMContentLoaded", () => {
+  // Set version dynamically
+  const versionElement = document.getElementById("extension-version");
+  if (versionElement) {
+    const manifest = chrome.runtime.getManifest();
+    versionElement.textContent = `v${manifest.version}`;
+  }
+
   // Load saved settings
   loadSettings();
 
