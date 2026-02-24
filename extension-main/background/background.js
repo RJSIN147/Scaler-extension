@@ -8,3 +8,4 @@
 
 importScripts("./companionBypass.js"); // Smart Companion Mode Bypass
 importScripts("./leetcodeLink.js"); // LeetCode Problem Search & Verification
+importScripts("./googleCalendar.js"); // Google Calendar Sync

@@ -90,6 +90,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       } else {
         restoreSubjectSort();
       }
+    } else if (key === "google-calendar-sync") {
+      if (value) {
+        initGoogleCalendarSync();
+      } else {
+        removeCalendarSyncButton();
+      }
     } else {
       updateVisibilityForKey(key, value);
     }
@@ -120,6 +126,9 @@ window.addEventListener("load", async () => {
 
   // Initialize Join Session buttons on dashboard
   setTimeout(initJoinSessionButtons, 1500);
+
+  // Initialize Google Calendar Sync button on dashboard
+  setTimeout(initGoogleCalendarSync, 2000);
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -160,6 +169,11 @@ handleUrlChange = function () {
 
   // Re-inject Join Session buttons on any dashboard navigation
   setTimeout(initJoinSessionButtons, 1500);
+
+  // Re-inject Google Calendar Sync button on dashboard navigation
+  if (window.location.href.includes("mentee-dashboard")) {
+    setTimeout(initGoogleCalendarSync, 2000);
+  }
 
   // Re-initialize Subject Sort on curriculum navigation
   if (window.location.href.includes("/core-curriculum")) {

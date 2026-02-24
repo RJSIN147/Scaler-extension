@@ -40,6 +40,7 @@ const DEFAULT_SETTINGS = {
   // Assignments
   companion: true,
   "subject-sort": true,
+  "google-calendar-sync": true,
   "mess-fee-filled-timestamp": null,
 };
 

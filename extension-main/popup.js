@@ -35,6 +35,7 @@ const DEFAULT_SETTINGS = {
   "join-session": true,
   "companion-bypass": true,
   "subject-sort": true,
+  "google-calendar-sync": true,
   "mess-fee-filled-timestamp": null,
 
   // Assignment
@@ -65,6 +66,7 @@ const TOGGLE_MAP = {
   "toggle-companion-bypass": "companion-bypass",
   "toggle-companion": "companion",
   "toggle-subject-sort": "subject-sort",
+  "toggle-google-calendar-sync": "google-calendar-sync",
 };
 
 // Current settings state
