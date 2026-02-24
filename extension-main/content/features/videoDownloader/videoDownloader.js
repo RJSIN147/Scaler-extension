@@ -5,13 +5,45 @@
 
 class VideoDownloader {
   constructor() {
+    this.enabled = true;
     this.init();
   }
 
-  init() {
-    this.checkAndInject();
-    // Observe DOM mutations to ensure button remains injected in SPA and wait for elements to load
-    const observer = new MutationObserver(() => this.checkAndInject());
+  async init() {
+    // Check if the feature is enabled in settings
+    try {
+      const result = await chrome.storage.sync.get("cleanerSettings");
+      if (
+        result.cleanerSettings &&
+        result.cleanerSettings["video-downloader"] === false
+      ) {
+        this.enabled = false;
+      }
+    } catch (e) {
+      // Default to enabled
+    }
+
+    // Listen for live toggle changes from the popup
+    chrome.runtime.onMessage.addListener((msg) => {
+      if (msg.action === "toggleSetting" && msg.key === "video-downloader") {
+        this.enabled = msg.value;
+        const existing = document.getElementById("scaler-video-downloader");
+        if (!msg.value && existing) {
+          existing.remove();
+        } else if (msg.value) {
+          this.checkAndInject();
+        }
+      }
+    });
+
+    if (this.enabled) {
+      this.checkAndInject();
+    }
+
+    // Observe DOM mutations for SPA navigation
+    const observer = new MutationObserver(() => {
+      if (this.enabled) this.checkAndInject();
+    });
     observer.observe(document.body, { childList: true, subtree: true });
   }
 

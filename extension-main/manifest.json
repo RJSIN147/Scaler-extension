@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Scaler++",
-  "version": "1.6.2",
-  "description": "Enhance Scaler Academy: Declutter UI, search 1000+ problems instantly & get instant LeetCode links with smart caching",
+  "version": "1.7.0",
+  "description": "Bypass companion-mode on campus WiFi, download lecture recordings as audio/video, get LeetCode links on assignments & declutter your Scaler dashboard — all in one lightweight extension.",
   "permissions": [
     "storage",
     "declarativeNetRequest",

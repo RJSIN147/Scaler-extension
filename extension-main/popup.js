@@ -35,6 +35,7 @@ const DEFAULT_SETTINGS = {
   "join-session": true,
   "companion-bypass": true,
   "subject-sort": true,
+  "video-downloader": true,
   "mess-fee-filled-timestamp": null,
 
   // Assignment
@@ -65,6 +66,7 @@ const TOGGLE_MAP = {
   "toggle-companion-bypass": "companion-bypass",
   "toggle-companion": "companion",
   "toggle-subject-sort": "subject-sort",
+  "toggle-video-downloader": "video-downloader",
 };
 
 // Current settings state
@@ -158,6 +160,7 @@ async function handleToggleChange(toggleId, settingKey) {
       "join-session",
       "companion-bypass",
       "subject-sort",
+      "video-downloader",
     ].includes(settingKey);
     if (isEnhancement) {
       showToast(newValue ? "Enabled ✓" : "Disabled ✓", "success");

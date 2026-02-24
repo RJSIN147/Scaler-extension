@@ -1,6 +1,6 @@
 # ✨ Scaler++
 
-Reclaim your focus! Declutter the Scaler Academy UI and enhance your practice sessions with this lightweight, privacy-first Chrome extension.
+Bypass companion-mode on campus WiFi, download lecture recordings as audio/video, get LeetCode links on assignments & declutter your Scaler dashboard — all in one lightweight, privacy-first Chrome extension.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-green?logo=googlechrome)](https://chromewebstore.google.com/detail/scaler-dom-cleaner/fpnleckmeeahiognlpphbadchogfjgcg)
 [![Version](https://img.shields.io/badge/Version-1.7.0-blue)]()
@@ -58,6 +58,17 @@ Search 1000+ problems instantly by name, topic, type, or day.
 - Real-time filtering as you type.
 - Smart highlighting for matches.
 
+### ⬇️ Lecture Downloader _(NEW in v1.7.0)_
+
+Download recorded lectures directly from the Scaler recordings page as **audio** or **video** — no external tools needed.
+
+- **🎵 Audio-First** — Extracts pure audio from HLS streams using a built-in MPEG-TS demuxer. A 2-hour lecture becomes a ~25 MB `.aac` file instead of a 200+ MB video.
+- **🎬 Video Too** — Full video downloads available as `.mp4` when you need visuals.
+- **⚡ 6× Parallel Downloads** — Concurrent chunk fetching with ordered disk writes. Downloads a 2-hour lecture in ~4 minutes instead of ~25 minutes.
+- **💾 Stream-to-Disk** — Uses the File System Access API to write directly to disk, so even long lectures won't crash your browser's memory.
+- **📊 Progress UI** — Opens a dedicated download tab with real-time progress bar, chunk counter, and activity logs.
+- **🎛️ Toggle Control** — Enable/disable from the popup settings.
+
 ---
 
 ## 🧹 CLEANER DASHBOARD
@@ -82,6 +93,7 @@ Search 1000+ problems instantly by name, topic, type, or day.
 
 - ✅ **Instant Apply** - Settings take effect immediately without a page reload.
 - ✅ **Smart Bypass** - Companion mode bypassed on-demand with zero permanent overhead.
+- ✅ **Lecture Downloads** - Download 2-hour recordings as lightweight audio or full video.
 - ✅ **Smart Caching** - LeetCode links load instantly on revisits (20-50× faster).
 - ✅ **Lightweight & Fast** - Native performance with no external dependencies.
 - ✅ **Privacy Centric** - No data collection; works entirely via local storage.
@@ -95,6 +107,7 @@ Search 1000+ problems instantly by name, topic, type, or day.
 2. Click the **extension icon** to toggle features ON/OFF.
 3. Use `/` on the problems page to start searching.
 4. Click **Join Session** on a live class card — the bypass activates automatically.
+5. On a recording page, click the **⬇️ download icon** → pick Audio or Video.
 
 ---
 
@@ -107,13 +120,21 @@ extension-main/
 ├── background/
 │   ├── background.js        ← Service worker entry point (importScripts only)
 │   ├── companionBypass.js   ← Smart Companion Bypass logic
-│   └── leetcodeLink.js      ← LeetCode search & verification
+│   ├── leetcodeLink.js      ← LeetCode search & verification
+│   └── videoTracker.js      ← M3U8 stream capture & download initiation
 └── content/
     ├── content.js           ← Entry point & message handler
     ├── core/                ← settings, styleInjector, urlObserver
     ├── cleaner/             ← selectors, cleanerEngine, modalHandler, sidebarHandler
-    ├── features/            ← problemSearch, practiceMode, leetcodeLink,
-    │                           joinClassButton, companionBypass, subjectSort
+    ├── features/
+    │   ├── videoDownloader/  ← Lecture download module
+    │   │   ├── videoDownloader.js   ← Button injection & recording detection
+    │   │   ├── videoProcessor.html  ← Download progress UI
+    │   │   ├── videoProcessor.js    ← Concurrent HLS downloader engine
+    │   │   ├── tsAudioExtractor.js  ← Pure-JS MPEG-TS audio demuxer
+    │   │   └── modeBadge.js         ← Audio/Video mode badge
+    │   ├── problemSearch, practiceMode, leetcodeLink,
+    │   │   joinClassButton, companionBypass, subjectSort
     └── utils/               ← domUtils, stringUtils
 ```
 
@@ -121,7 +142,16 @@ extension-main/
 
 ## 📝 Changelog
 
-### v1.7.0 🛡️ Smart Companion Bypass Edition
+### v1.7.0 ⬇️ Lecture Downloader Edition
+
+- **⬇️ Lecture Downloader**: Download recorded lectures as audio (`.aac`) or video (`.mp4`) directly from Scaler's recordings page.
+- **🎵 Audio Extraction**: Built-in MPEG-TS demuxer strips video tracks, outputting lightweight ~25 MB audio files from 200+ MB streams.
+- **⚡ 6× Parallel Downloads**: Concurrent chunk-fetching with ordered disk writes via the File System Access API.
+- **📊 Progress UI**: Dedicated download tab with real-time progress bar, chunk counter, and activity logs.
+- **🏗️ Modular Architecture**: Video downloader housed in its own `features/videoDownloader/` module.
+- **🎛️ Toggle Control**: Enable/disable the download button from the popup settings.
+
+### v1.6.2 🛡️ Smart Companion Bypass Edition
 
 - **🛡️ Smart Companion Bypass**: Activates IP-spoofing headers for ~5 s when joining a session, then removes them automatically — zero impact on normal browsing speed.
 - **⚡ On-Demand Trigger**: Detects `/session?joinSession=1` URL in the background via `chrome.tabs.onUpdated` — no content-script involvement needed.
