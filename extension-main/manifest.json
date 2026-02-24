@@ -6,7 +6,9 @@
   "permissions": [
     "storage",
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequestWithHostAccess",
+    "webRequest",
+    "downloads"
   ],
   "host_permissions": [
     "https://leetcode.com/*",
@@ -46,6 +48,7 @@
         "content/features/practiceMode.js",
         "content/features/joinClassButton.js",
         "content/features/subjectSort.js",
+        "content/features/videoDownloader/videoDownloader.js",
         "content/content.js"
       ],
       "run_at": "document_idle"
