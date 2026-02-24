@@ -210,9 +210,12 @@ function injectCalendarSyncButton() {
         return;
     }
 
-    // Find the tabs header to place the button near it
-    const tabsHeader = document.querySelector(".tabs__header");
-    if (!tabsHeader) return;
+    // Find the Time Table section and its header
+    const timeTableSection = document.querySelector('[data-cy="ug-time-table-section"]');
+    if (!timeTableSection) return;
+
+    const sectionHeader = timeTableSection.querySelector(".section-header");
+    if (!sectionHeader) return;
 
     // Check if button already exists
     if (document.querySelector(".scaler-cal-sync-container")) return;
@@ -249,8 +252,8 @@ function injectCalendarSyncButton() {
     container.appendChild(btn);
     container.appendChild(status);
 
-    // Insert after the tabs header
-    tabsHeader.parentNode.insertBefore(container, tabsHeader.nextSibling);
+    // Insert after the "Time Table" section header, before the date tabs
+    sectionHeader.insertAdjacentElement("afterend", container);
     _calSyncBtnInjected = true;
 
     // Inject styles
