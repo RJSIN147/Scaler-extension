@@ -201,6 +201,29 @@ function getActiveDashboardDateISO() {
 // ─── UI: Sync Button ─────────────────────────────────────────
 
 let _calSyncBtnInjected = false;
+let _calSyncObserver = null;
+
+/**
+ * Generate a unique key for a class to track what's been synced.
+ */
+function classKey(cls) {
+    return `${cls.date}|${cls.title}|${cls.startTime}`;
+}
+
+/**
+ * Get the set of currently visible class keys from the active tab.
+ */
+function getCurrentClassKeys() {
+    const keys = new Set();
+    const activeDate = getActiveDashboardDateISO();
+    if (!activeDate) return keys;
+    const cards = document.querySelectorAll('a.me-cr-classroom-url[data-cy="classroom-link"]');
+    cards.forEach((card) => {
+        const data = extractClassData(card, activeDate);
+        if (data) keys.add(classKey(data));
+    });
+    return keys;
+}
 
 /**
  * Inject the "📅 Sync to Calendar" button on the dashboard.
@@ -304,26 +327,42 @@ async function handleSyncClick(btn, status) {
         if (result.error) {
             status.textContent = `❌ ${result.error}`;
             status.classList.add("scaler-cal-sync-status--error");
+            // Restore button on error
+            btn.disabled = false;
+            btn.classList.remove("scaler-cal-sync-btn--loading");
+            btn.innerHTML = originalHTML;
+            setTimeout(() => {
+                status.textContent = "";
+                status.className = "scaler-cal-sync-status";
+            }, 8000);
         } else {
-            const parts = [];
-            if (result.created > 0) parts.push(`${result.created} added`);
-            if (result.skipped > 0) parts.push(`${result.skipped} already synced`);
-            if (result.errors > 0) parts.push(`${result.errors} failed`);
+            // Save synced class keys
+            const syncedKeys = classes.map(classKey);
+            try {
+                const stored = await chrome.storage.local.get("syncedClassKeys");
+                const existing = stored.syncedClassKeys || [];
+                const merged = [...new Set([...existing, ...syncedKeys])];
+                await chrome.storage.local.set({ syncedClassKeys: merged });
+            } catch (e) {
+                console.warn("[Scaler++ Calendar] Could not save synced keys:", e);
+            }
 
-            status.textContent = `✅ ${parts.join(", ")}`;
-            status.classList.add("scaler-cal-sync-status--success");
+            // Hide the button container on success
+            const container = document.querySelector(".scaler-cal-sync-container");
+            if (container) container.style.display = "none";
+            _calSyncBtnInjected = false;
+
+            // Start watching for new classes
+            observeForNewClasses();
         }
     } catch (error) {
         console.error("[Scaler++ Calendar] Sync error:", error);
         status.textContent = "❌ Sync failed. Check console for details.";
         status.classList.add("scaler-cal-sync-status--error");
-    } finally {
-        // Restore button
+        // Restore button on error
         btn.disabled = false;
         btn.classList.remove("scaler-cal-sync-btn--loading");
         btn.innerHTML = originalHTML;
-
-        // Auto-clear status after 8 seconds
         setTimeout(() => {
             status.textContent = "";
             status.className = "scaler-cal-sync-status";
@@ -428,14 +467,85 @@ function removeCalendarSyncButton() {
     _calSyncBtnInjected = false;
 }
 
+/**
+ * Watch for new class cards appearing and re-show the button if needed.
+ */
+function observeForNewClasses() {
+    if (_calSyncObserver) return; // already watching
+
+    _calSyncObserver = new MutationObserver(async () => {
+        if (currentSettings["google-calendar-sync"] === false) return;
+        if (!location.href.includes("mentee-dashboard")) return;
+
+        try {
+            const stored = await chrome.storage.local.get("syncedClassKeys");
+            const syncedKeys = new Set(stored.syncedClassKeys || []);
+            const currentKeys = getCurrentClassKeys();
+
+            // Check if any current class is not in synced set
+            let hasNew = false;
+            for (const key of currentKeys) {
+                if (!syncedKeys.has(key)) {
+                    hasNew = true;
+                    break;
+                }
+            }
+
+            if (hasNew) {
+                // Show the button again
+                const container = document.querySelector(".scaler-cal-sync-container");
+                if (container) {
+                    container.style.display = "flex";
+                    _calSyncBtnInjected = true;
+                } else {
+                    injectCalendarSyncButton();
+                }
+                // Stop observing once button is re-shown
+                if (_calSyncObserver) {
+                    _calSyncObserver.disconnect();
+                    _calSyncObserver = null;
+                }
+            }
+        } catch (e) {
+            // Silently ignore
+        }
+    });
+
+    _calSyncObserver.observe(document.body, { childList: true, subtree: true });
+}
+
 // ─── Entry Point ─────────────────────────────────────────────
 
 /**
  * Initialize Google Calendar Sync — only on mentee dashboard.
  */
-function initGoogleCalendarSync() {
+async function initGoogleCalendarSync() {
     if (!location.href.includes("mentee-dashboard")) return;
     if (currentSettings["google-calendar-sync"] === false) return;
+
+    // Check if all current classes are already synced
+    try {
+        const stored = await chrome.storage.local.get("syncedClassKeys");
+        const syncedKeys = new Set(stored.syncedClassKeys || []);
+        const currentKeys = getCurrentClassKeys();
+
+        if (currentKeys.size > 0) {
+            let allSynced = true;
+            for (const key of currentKeys) {
+                if (!syncedKeys.has(key)) {
+                    allSynced = false;
+                    break;
+                }
+            }
+            if (allSynced) {
+                // All current classes already synced, hide button and watch for new ones
+                observeForNewClasses();
+                return;
+            }
+        }
+    } catch (e) {
+        // On error, just show the button
+    }
 
     injectCalendarSyncButton();
 }
