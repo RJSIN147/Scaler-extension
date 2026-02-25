@@ -33,13 +33,12 @@ class WhisperTranscriber {
     // Disable local model check (always fetch from HuggingFace Hub)
     if (HF.env) HF.env.allowLocalModels = false;
 
-    // Point ONNX Runtime WASM files to local copies (CDN is blocked by MV3 CSP)
-    const localWasmDir = location.href.substring(
+    const localDir = location.href.substring(
       0,
       location.href.lastIndexOf("/") + 1,
     );
     if (HF.env && HF.env.backends && HF.env.backends.onnx) {
-      HF.env.backends.onnx.wasm.wasmPaths = localWasmDir;
+      HF.env.backends.onnx.wasm.wasmPaths = localDir;
     }
 
     this.pipeline = await HF.pipeline(
