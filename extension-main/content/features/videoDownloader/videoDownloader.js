@@ -129,8 +129,23 @@ class VideoDownloader {
       menu.style.display = "none";
     };
 
+    // Transcript Option
+    const divider = document.createElement("div");
+    divider.style.borderTop = "1px solid #4a4a52";
+    divider.style.margin = "4px 0";
+
+    const transcriptOption = document.createElement("div");
+    transcriptOption.innerText = "📝 Transcript";
+    this.styleOption(transcriptOption);
+    transcriptOption.onclick = () => {
+      this.startDownload("transcript");
+      menu.style.display = "none";
+    };
+
     menu.appendChild(audioOption);
     menu.appendChild(videoOption);
+    menu.appendChild(divider);
+    menu.appendChild(transcriptOption);
 
     container.appendChild(button);
     container.appendChild(menu);

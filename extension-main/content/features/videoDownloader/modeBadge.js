@@ -4,6 +4,11 @@
     new URLSearchParams(window.location.search).get("type") || "video";
   const badge = document.getElementById("mode-badge");
   badge.textContent = type.toUpperCase();
-  badge.className =
-    "mode-badge " + (type === "audio" ? "mode-audio" : "mode-video");
+  const modeClass =
+    type === "audio"
+      ? "mode-audio"
+      : type === "transcript"
+        ? "mode-transcript"
+        : "mode-video";
+  badge.className = "mode-badge " + modeClass;
 })();

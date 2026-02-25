@@ -34,6 +34,9 @@ if (!m3u8Url) {
   log(`Stream: ${m3u8Url.substring(0, 60)}...`);
   if (downloadType === "audio") {
     log("Audio extraction enabled — will strip video tracks from chunks.");
+  } else if (downloadType === "transcript") {
+    log("Transcript mode — will download audio, then transcribe locally.");
+    log("⚡ Uses Whisper AI running entirely in your browser (no API keys).");
   }
 }
 
@@ -69,8 +72,8 @@ function getMediaPlaylistUrl(masterText, baseUrl) {
 
   // ── Master playlist: find best stream ──
 
-  // For AUDIO: try to find a dedicated audio-only rendition first
-  if (downloadType === "audio") {
+  // For AUDIO or TRANSCRIPT: try to find a dedicated audio-only rendition first
+  if (downloadType === "audio" || downloadType === "transcript") {
     for (const line of lines) {
       if (line.startsWith("#EXT-X-MEDIA") && line.includes("TYPE=AUDIO")) {
         const match = line.match(/URI="([^"]+)"/);
@@ -231,6 +234,80 @@ async function downloadConcurrently(segments, writable, audioExtractor) {
   log(`All ${total} chunks processed.`);
 }
 
+// ── Concurrent Download to Memory (for transcript mode) ──
+
+async function downloadToMemory(segments, audioExtractor) {
+  const total = segments.length;
+  let nextToFetch = 0;
+  let nextToWrite = 0;
+  const buffer = new Map();
+  const audioChunks = [];
+
+  function updateUI(written) {
+    const pct = ((written / total) * 100).toFixed(1);
+    progressBar.style.width = pct + "%";
+    chunksText.innerText = `${written} / ${total} chunks`;
+    percentText.innerText = `${pct}%`;
+  }
+
+  function flush() {
+    while (buffer.has(nextToWrite)) {
+      const data = buffer.get(nextToWrite);
+      buffer.delete(nextToWrite);
+      if (data && data.byteLength > 0) {
+        audioChunks.push(data);
+      }
+      nextToWrite++;
+      updateUI(nextToWrite);
+      if (nextToWrite % 50 === 0) {
+        log(`Audio download: ${nextToWrite}/${total} chunks.`);
+      }
+    }
+  }
+
+  async function worker() {
+    while (true) {
+      const idx = nextToFetch++;
+      if (idx >= total) break;
+      const raw = await fetchChunk(segments[idx], idx);
+      let processed;
+      if (raw === null) {
+        processed = new Uint8Array(0);
+      } else if (audioExtractor) {
+        processed = audioExtractor.extract(raw);
+      } else {
+        processed = new Uint8Array(raw);
+      }
+      buffer.set(idx, processed);
+      flush();
+    }
+  }
+
+  log(`Downloading audio (${CONCURRENCY}x parallel)...`);
+  const workers = [];
+  for (let i = 0; i < CONCURRENCY; i++) {
+    workers.push(worker());
+  }
+  await Promise.all(workers);
+  flush();
+
+  // Concatenate all chunks into a single ArrayBuffer
+  let totalBytes = 0;
+  for (const chunk of audioChunks) totalBytes += chunk.byteLength;
+  const combined = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of audioChunks) {
+    combined.set(
+      chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk),
+      offset,
+    );
+    offset += chunk.byteLength;
+  }
+
+  log(`Audio downloaded: ${(totalBytes / 1024 / 1024).toFixed(1)} MB`);
+  return combined.buffer;
+}
+
 // ── Main Download Flow ──
 
 startBtn.addEventListener("click", async () => {
@@ -255,7 +332,72 @@ startBtn.addEventListener("click", async () => {
 
     log(`Found ${segments.length} chunks to download.`);
 
-    // 3. Ask user where to save
+    // ── TRANSCRIPT MODE ──
+    if (downloadType === "transcript") {
+      const startTime = Date.now();
+      statusText.innerText = "Phase 1/3: Downloading audio...";
+
+      // Download audio into memory
+      const audioExtractor = new TSAudioExtractor();
+      const audioBuffer = await downloadToMemory(segments, audioExtractor);
+
+      // ── Reset progress bar for Phase 2 ──
+      progressBar.style.width = "0%";
+      chunksText.innerText = "—";
+      percentText.innerText = "0%";
+
+      // Decode audio to PCM
+      statusText.innerText = "Phase 2/3: Loading Whisper AI model...";
+      const transcriber = new WhisperTranscriber(log);
+      await transcriber.loadModel();
+
+      statusText.innerText = "Phase 2/3: Decoding audio...";
+      const pcmData = await transcriber.decodeAudioToFloat32(audioBuffer);
+
+      // ── Reset progress bar for Phase 3 ──
+      progressBar.style.width = "0%";
+      chunksText.innerText = "0 / 0 segments";
+      percentText.innerText = "0%";
+
+      // Transcribe
+      statusText.innerText = "Phase 3/3: Transcribing (this takes a while)...";
+      const transcript = await transcriber.transcribe(
+        pcmData,
+        (pct, current, total) => {
+          progressBar.style.width = pct.toFixed(1) + "%";
+          chunksText.innerText = `${current} / ${total} segments`;
+          percentText.innerText = `${pct.toFixed(1)}%`;
+        },
+      );
+
+      if (!transcript || transcript.trim().length === 0) {
+        throw new Error(
+          "Transcription produced no text. Audio may be silent or unsupported.",
+        );
+      }
+
+      // Save as .txt using Blob download (showSaveFilePicker fails because
+      // the user gesture expired during the 10-15 min transcription)
+      const blob = new Blob([transcript], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Scaler_Lecture_Transcript.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
+      const wordCount = transcript.split(/\s+/).length;
+      log(`✅ Transcript saved! ${wordCount} words in ${elapsed} min.`);
+      statusText.innerText = `🎉 Transcript Complete! (${wordCount} words, ${elapsed} min)`;
+      progressBar.style.width = "100%";
+      progressBar.style.background = "#10b981";
+      return;
+    }
+
+    // ── AUDIO / VIDEO MODE ──
     const ext = downloadType === "audio" ? "aac" : "mp4";
     statusText.innerText = "Choose where to save the file...";
 
@@ -280,23 +422,23 @@ startBtn.addEventListener("click", async () => {
       return;
     }
 
-    // 4. Open writable stream to disk
+    // Open writable stream to disk
     const writable = await fileHandle.createWritable();
 
-    // 5. Prepare audio extractor if needed
+    // Prepare audio extractor if needed
     let audioExtractor = null;
     if (downloadType === "audio") {
       audioExtractor = new TSAudioExtractor();
       log("Audio extractor initialized — stripping video from each chunk.");
     }
 
-    // 6. Download concurrently!
+    // Download concurrently!
     const startTime = Date.now();
     statusText.innerText = `Downloading ${downloadType} (${CONCURRENCY}x parallel)...`;
 
     await downloadConcurrently(segments, writable, audioExtractor);
 
-    // 7. Finalize
+    // Finalize
     await writable.close();
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);

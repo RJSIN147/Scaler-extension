@@ -1,6 +1,6 @@
 # ✨ Scaler++
 
-Bypass companion-mode on campus WiFi, download lecture recordings as audio/video, get LeetCode links on assignments & declutter your Scaler dashboard — all in one lightweight, privacy-first Chrome extension.
+Bypass companion-mode on campus WiFi, download lecture recordings as audio/video, transcribe lectures locally with AI, get LeetCode links on assignments & declutter your Scaler dashboard — all in one lightweight, privacy-first Chrome extension.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-green?logo=googlechrome)](https://chromewebstore.google.com/detail/scaler-dom-cleaner/fpnleckmeeahiognlpphbadchogfjgcg)
 [![Version](https://img.shields.io/badge/Version-1.7.0-blue)]()
@@ -58,15 +58,17 @@ Search 1000+ problems instantly by name, topic, type, or day.
 - Real-time filtering as you type.
 - Smart highlighting for matches.
 
-### ⬇️ Lecture Downloader _(NEW in v1.7.0)_
+### ⬇️ Lecture Downloader & 📝 AI Transcription _(Updated in v1.8.0)_
 
-Download recorded lectures directly from the Scaler recordings page as **audio** or **video** — no external tools needed.
+Download recorded lectures directly from the Scaler recordings page as **audio**, **video**, or **AI-generated transcript** — no external tools or API keys needed.
 
 - **🎵 Audio-First** — Extracts pure audio from HLS streams using a built-in MPEG-TS demuxer. A 2-hour lecture becomes a ~25 MB `.aac` file instead of a 200+ MB video.
 - **🎬 Video Too** — Full video downloads available as `.mp4` when you need visuals.
+- **📝 AI Transcript** — Generates a `.txt` transcript of the entire lecture using **Whisper AI running 100% locally in your browser** via Transformers.js + ONNX Runtime WASM. No API keys, no cost, fully offline after first model download (~75 MB, cached automatically).
+- **🧠 Anti-Hallucination** — Silence detection, repetition filtering, and deduplication ensure clean transcripts even with whisper-tiny.
 - **⚡ 6× Parallel Downloads** — Concurrent chunk fetching with ordered disk writes. Downloads a 2-hour lecture in ~4 minutes instead of ~25 minutes.
 - **💾 Stream-to-Disk** — Uses the File System Access API to write directly to disk, so even long lectures won't crash your browser's memory.
-- **📊 Progress UI** — Opens a dedicated download tab with real-time progress bar, chunk counter, and activity logs.
+- **📊 Progress UI** — Opens a dedicated download tab with real-time progress bar, chunk counter, ETA, and activity logs. Progress bar resets between download and transcription phases.
 - **🎛️ Toggle Control** — Enable/disable from the popup settings.
 
 ---
@@ -93,7 +95,7 @@ Download recorded lectures directly from the Scaler recordings page as **audio**
 
 - ✅ **Instant Apply** - Settings take effect immediately without a page reload.
 - ✅ **Smart Bypass** - Companion mode bypassed on-demand with zero permanent overhead.
-- ✅ **Lecture Downloads** - Download 2-hour recordings as lightweight audio or full video.
+- ✅ **Lecture Downloads** - Download 2-hour recordings as lightweight audio, full video, or AI transcript.
 - ✅ **Smart Caching** - LeetCode links load instantly on revisits (20-50× faster).
 - ✅ **Lightweight & Fast** - Native performance with no external dependencies.
 - ✅ **Privacy Centric** - No data collection; works entirely via local storage.
@@ -107,7 +109,7 @@ Download recorded lectures directly from the Scaler recordings page as **audio**
 2. Click the **extension icon** to toggle features ON/OFF.
 3. Use `/` on the problems page to start searching.
 4. Click **Join Session** on a live class card — the bypass activates automatically.
-5. On a recording page, click the **⬇️ download icon** → pick Audio or Video.
+5. On a recording page, click the **⬇️ download icon** → pick Audio, Video, or 📝 Transcript.
 
 ---
 
@@ -127,12 +129,15 @@ extension-main/
     ├── core/                ← settings, styleInjector, urlObserver
     ├── cleaner/             ← selectors, cleanerEngine, modalHandler, sidebarHandler
     ├── features/
-    │   ├── videoDownloader/  ← Lecture download module
-    │   │   ├── videoDownloader.js   ← Button injection & recording detection
-    │   │   ├── videoProcessor.html  ← Download progress UI
-    │   │   ├── videoProcessor.js    ← Concurrent HLS downloader engine
-    │   │   ├── tsAudioExtractor.js  ← Pure-JS MPEG-TS audio demuxer
-    │   │   └── modeBadge.js         ← Audio/Video mode badge
+    │   ├── videoDownloader/  ← Lecture download & transcript module
+    │   │   ├── videoDownloader.js    ← Button injection & recording detection
+    │   │   ├── videoProcessor.html   ← Download/transcript progress UI
+    │   │   ├── videoProcessor.js     ← Concurrent HLS downloader engine
+    │   │   ├── whisperTranscriber.js ← Local Whisper AI transcription engine
+    │   │   ├── transformers.min.js   ← Bundled Transformers.js (HuggingFace)
+    │   │   ├── ort-*.wasm/mjs        ← ONNX Runtime WASM backend files
+    │   │   ├── tsAudioExtractor.js   ← Pure-JS MPEG-TS audio demuxer
+    │   │   └── modeBadge.js          ← Audio/Video/Transcript mode badge
     │   ├── problemSearch, practiceMode, leetcodeLink,
     │   │   joinClassButton, companionBypass, subjectSort
     └── utils/               ← domUtils, stringUtils
@@ -141,6 +146,15 @@ extension-main/
 ---
 
 ## 📝 Changelog
+
+### v1.8.0 📝 AI Lecture Transcription Edition
+
+- **📝 AI Transcript**: Generate `.txt` transcripts of lectures using Whisper AI running entirely in the browser — no API keys, no cost, fully offline.
+- **🧠 Local Whisper**: Bundled Transformers.js + ONNX Runtime WASM loads the `whisper-tiny` model (~75 MB, auto-cached after first download).
+- **🛡️ Anti-Hallucination**: Silence detection (RMS threshold), in-chunk repetition removal, and cross-chunk deduplication ensure clean transcripts.
+- **📊 Phase-Separated Progress**: Download and transcription phases each get their own 0–100% progress bar with ETA display.
+- **💾 Auto-Save**: Transcript downloads automatically as `.txt` — no file picker needed (user gesture expires during long transcription).
+- **🏗️ CSP Compliance**: All ONNX/WASM files bundled locally to satisfy MV3's strict `script-src 'self'` policy.
 
 ### v1.7.0 ⬇️ Lecture Downloader Edition
 
