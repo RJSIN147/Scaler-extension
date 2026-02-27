@@ -18,7 +18,7 @@ Bypass Scaler's companion-mode restrictions **only when you need to** — with z
 - **🚀 Zero Slowdown** — Unlike always-on VPNs or proxy extensions, rules are active for ≈5 s per session join. The browser runs at full speed the rest of the time.
 - **🔀 Random IP Pool** — Picks a random spoofed IP from a pool of 8 addresses on every activation.
 - **🎛️ Toggle Control** — Enable/disable from the popup settings at any time.
-- **Credits** - Improved the approach used by [PHATWalrus](https://github.com/PHATWalrus)
+- **Credits** - [PHATWalrus](https://github.com/PHATWalrus)
 
 ### 🚀 Direct Join Session
 
@@ -46,6 +46,7 @@ Automatically detects assignment problems and adds a **direct link** to the corr
 - **💾 Persistent Cache** - 30-day cache with auto-expiration.
 - **🎨 Beautiful UI** - Elegant link with LeetCode icon and smooth hover effects.
 - **🔄 Seamless** - Opens in a new tab for an uninterrupted workflow.
+- **Credits** - Siddhanth kapoor
 
 ### 🎯 Practice Mode
 
