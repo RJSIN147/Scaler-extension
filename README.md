@@ -10,7 +10,7 @@ Bypass companion-mode on campus WiFi, download lecture recordings as audio/video
 
 ## 🚀 ENHANCEMENTS
 
-### 🛡️ Smart Companion Bypass _(NEW in v1.6.0)_
+### 🛡️ Smart Companion Bypass
 
 Bypass Scaler's companion-mode restrictions **only when you need to** — with zero impact on everyday browser performance.
 
@@ -18,6 +18,7 @@ Bypass Scaler's companion-mode restrictions **only when you need to** — with z
 - **🚀 Zero Slowdown** — Unlike always-on VPNs or proxy extensions, rules are active for ≈5 s per session join. The browser runs at full speed the rest of the time.
 - **🔀 Random IP Pool** — Picks a random spoofed IP from a pool of 8 addresses on every activation.
 - **🎛️ Toggle Control** — Enable/disable from the popup settings at any time.
+- **Credits** - Improved the approach used by [PHATWalrus](https://github.com/PHATWalrus)
 
 ### 🚀 Direct Join Session
 
@@ -202,5 +203,5 @@ extension-main/
 
 ---
 
-Made with ❤️ by **Ritesh Prajapati** for the Scaler community.
+Made with ❤️ by **Scaler community** for the Scaler community.
 _Focus on what matters — your learning journey!_
