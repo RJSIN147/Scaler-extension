@@ -148,23 +148,16 @@ extension-main/
 
 ## 📝 Changelog
 
-### v1.8.0 📝 AI Lecture Transcription Edition
+### v1.7.0 ⬇️ Lecture Downloader & 📝 AI Transcription Edition
 
-- **📝 AI Transcript**: Generate `.txt` transcripts of lectures using Whisper AI running entirely in the browser — no API keys, no cost, fully offline.
-- **🧠 Local Whisper**: Bundled Transformers.js + ONNX Runtime WASM loads the `whisper-tiny` model (~75 MB, auto-cached after first download).
-- **🛡️ Anti-Hallucination**: Silence detection (RMS threshold), in-chunk repetition removal, and cross-chunk deduplication ensure clean transcripts.
-- **📊 Phase-Separated Progress**: Download and transcription phases each get their own 0–100% progress bar with ETA display.
-- **💾 Auto-Save**: Transcript downloads automatically as `.txt` — no file picker needed (user gesture expires during long transcription).
-- **🏗️ CSP Compliance**: All ONNX/WASM files bundled locally to satisfy MV3's strict `script-src 'self'` policy.
-
-### v1.7.0 ⬇️ Lecture Downloader Edition
-
-- **⬇️ Lecture Downloader**: Download recorded lectures as audio (`.aac`) or video (`.mp4`) directly from Scaler's recordings page.
+- **⬇️ Lecture Downloader**: Download recorded lectures as audio (`.aac`), video (`.mp4`), or AI-generated transcript directly from Scaler's recordings page.
+- **📝 AI Transcript**: Generates `.txt` transcripts of lectures using Whisper AI (Transformers.js + ONNX Runtime WASM) running 100% locally in your browser.
 - **🎵 Audio Extraction**: Built-in MPEG-TS demuxer strips video tracks, outputting lightweight ~25 MB audio files from 200+ MB streams.
-- **⚡ 6× Parallel Downloads**: Concurrent chunk-fetching with ordered disk writes via the File System Access API.
-- **📊 Progress UI**: Dedicated download tab with real-time progress bar, chunk counter, and activity logs.
-- **🏗️ Modular Architecture**: Video downloader housed in its own `features/videoDownloader/` module.
-- **🎛️ Toggle Control**: Enable/disable the download button from the popup settings.
+- **⚡ 6× Parallel Downloads**: Concurrent chunk-fetching with ordered disk writes via the File System Access API for 500% faster downloads.
+- **🧠 Anti-Hallucination**: Silence detection, in-chunk repetition removal, and cross-chunk deduplication ensure clean transcripts.
+- **📊 Progress UI**: Dedicated download tab with phase-separated progress bars (Download vs. Transcription), chunk counter, and ETA.
+- **💾 Auto-Save**: Transcripts and media files save automatically to disk — no manual file picker needed.
+- **🏗️ CSP Compliance**: All ONNX/WASM files bundled locally to satisfy MV3's strict `script-src 'self'` policy.
 
 ### v1.6.2 🛡️ Smart Companion Bypass Edition
 
