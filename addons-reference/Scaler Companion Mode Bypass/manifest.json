@@ -1,0 +1,30 @@
+{
+   "author": "PhatWalrus",
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [ {
+      "js": [ "content.js" ],
+      "matches": [ "*://www.scaler.com/*" ],
+      "run_at": "document_start"
+   } ],
+   "description": "Companion Mode Bypass fos scaler.com",
+   "homepage_url": "https://ext.fileish.com",
+   "host_permissions": [ "*://scaler.com/*", "*://www.scaler.com/*", "*://*.scaler.com/*" ],
+   "icons": {
+      "128": "logo-128.png",
+      "32": "logo-32.png",
+      "48": "logo-48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0q6Fn8B21ffNMJR/rHBBN8u14/qEAi8/d0lEJh7NZtUSsJ+eSR0n3+RjlLiChZF/RW0UfdMRbp0xWvo5j0aE+Q0wBMOCpPBJ4/ycanXCpBwZNZ+dQj6kvsLwoBQbt6H5vMqdpxa/RPZ/fGtV+3VUUi4xxbYhYE5unMHR0Cs8VbdpvvB6EYKLmNYp/PT+QajyZ14PQVfe78VMRVUGUsgf76rAZxrgHakRaLD+JFYCh2e48MXicuA4cVRzbgRS2qi8u/bRrv2VFXrA2kQSNVWlIKTQEssQkyUPgAqWz6l5uUGMF0JVdN8gV8siZcTxsgd0rcC4o4Dr7Q3YzSQivMWXmQIDAQAB",
+   "manifest_version": 3,
+   "name": "Scaler Companion Mode Bypass",
+   "permissions": [ "declarativeNetRequest", "declarativeNetRequestWithHostAccess", "storage" ],
+   "short_name": "Companion Mode Bypass",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.0.0",
+   "web_accessible_resources": [ {
+      "matches": [ "*://scaler.com/*" ],
+      "resources": [ "icon.svg" ]
+   } ]
+}
