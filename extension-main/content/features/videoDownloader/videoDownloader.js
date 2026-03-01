@@ -100,7 +100,7 @@ class VideoDownloader {
 
     // Audio Option
     const audioOption = document.createElement("div");
-    audioOption.innerText = "Download Audio";
+    audioOption.innerText = "Audio";
     this.styleOption(audioOption);
     audioOption.onclick = () => {
       this.startDownload("audio");
@@ -109,7 +109,7 @@ class VideoDownloader {
 
     // Video Option
     const videoOption = document.createElement("div");
-    videoOption.innerText = "Download Video";
+    videoOption.innerText = "Video";
     this.styleOption(videoOption);
     videoOption.onclick = () => {
       this.startDownload("video");
@@ -117,12 +117,9 @@ class VideoDownloader {
     };
 
     // Transcript Option
-    const divider = document.createElement("div");
-    divider.style.borderTop = "1px solid #4a4a52";
-    divider.style.margin = "4px 0";
 
     const transcriptOption = document.createElement("div");
-    transcriptOption.innerText = "📝 Transcript";
+    transcriptOption.innerText = "Transcript";
     this.styleOption(transcriptOption);
     transcriptOption.onclick = () => {
       this.startDownload("transcript");
@@ -131,7 +128,6 @@ class VideoDownloader {
 
     menu.appendChild(audioOption);
     menu.appendChild(videoOption);
-    menu.appendChild(divider);
     menu.appendChild(transcriptOption);
 
     container.appendChild(button);
