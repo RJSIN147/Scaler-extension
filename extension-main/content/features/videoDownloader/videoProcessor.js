@@ -17,7 +17,6 @@ function log(msg) {
   p.innerText = `> ${msg}`;
   logsElem.appendChild(p);
   logsElem.scrollTop = logsElem.scrollHeight;
-  console.log("[Scaler++ Downloader]", msg);
 }
 
 // ── Get params from URL ──
