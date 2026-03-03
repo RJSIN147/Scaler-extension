@@ -100,13 +100,57 @@ class TSAudioExtractor {
     if (audioBuffers.length === 0) return new Uint8Array(0);
 
     const totalLength = audioBuffers.reduce((sum, b) => sum + b.length, 0);
-    const result = new Uint8Array(totalLength);
+    const raw = new Uint8Array(totalLength);
     let pos = 0;
     for (const buf of audioBuffers) {
-      result.set(buf, pos);
+      raw.set(buf, pos);
       pos += buf.length;
     }
 
+    // ── Validate ADTS frames ──
+    // Strip any non-ADTS bytes that slipped through the demuxer.
+    // ADTS sync word: 12 bits = 0xFFF (bytes: 0xFF 0xF_)
+    // Invalid bytes confuse players into miscalculating duration.
+    return this._filterADTS(raw);
+  }
+
+  /**
+   * Filter raw bytes to only include valid ADTS frames.
+   * Walks through the data looking for ADTS sync words (0xFFF)
+   * and copies only complete, valid frames.
+   */
+  _filterADTS(data) {
+    const frames = [];
+    let i = 0;
+
+    while (i < data.length - 7) {
+      // Look for ADTS sync word: 0xFF followed by 0xF0-0xFF
+      if (data[i] === 0xff && (data[i + 1] & 0xf0) === 0xf0) {
+        // Parse ADTS header to get frame length
+        const frameLen =
+          ((data[i + 3] & 0x03) << 11) |
+          (data[i + 4] << 3) |
+          ((data[i + 5] >> 5) & 0x07);
+
+        if (frameLen > 0 && i + frameLen <= data.length) {
+          frames.push(data.subarray(i, i + frameLen));
+          i += frameLen;
+          continue;
+        }
+      }
+      // Not a valid ADTS frame — skip byte
+      i++;
+    }
+
+    if (frames.length === 0) return data; // Fallback: return raw if no ADTS found
+
+    const totalLen = frames.reduce((s, f) => s + f.length, 0);
+    const result = new Uint8Array(totalLen);
+    let off = 0;
+    for (const f of frames) {
+      result.set(f, off);
+      off += f.length;
+    }
     return result;
   }
 

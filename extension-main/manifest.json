@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Scaler++",
   "version": "1.7.0",
-  "description": "Bypass companion-mode on campus WiFi, download lecture recordings as audio/video, get LeetCode links on assignments & declutter your Scaler dashboard — all in one lightweight extension.",
+  "description": "Bypass companion-mode on campus WiFi, download lecture recordings, get LeetCode links on assignments & declutter Scaler dashboard",
   "permissions": [
     "storage",
     "declarativeNetRequest",

@@ -48,34 +48,21 @@ class VideoDownloader {
   }
 
   checkAndInject() {
-    console.log("[Scaler++ VideoDownloader] checkAndInject called");
     // 1. Safely look for vp-controls and the target header container
     // The presence of .vp-controls is the primary indicator that this is a recording,
     // as live sessions do not have it.
     const vpControls = document.querySelector(".vp-controls");
     const headerActions = document.querySelectorAll(".m-header__actions")[1];
-    console.log("[Scaler++ VideoDownloader] vpControls found:", !!vpControls);
-    console.log(
-      "[Scaler++ VideoDownloader] headerActions found:",
-      !!headerActions,
-    );
 
     if (!vpControls || !headerActions) {
-      console.log(
-        "[Scaler++ VideoDownloader] Missing required un-injected elements, returning",
-      );
       return;
     }
 
     // 3. Inject only if we haven't already
     if (document.getElementById("scaler-video-downloader")) {
-      console.log(
-        "[Scaler++ VideoDownloader] Button already injected, returning",
-      );
       return;
     }
 
-    console.log("[Scaler++ VideoDownloader] Injecting button...");
     this.injectButton(headerActions);
   }
 
@@ -113,7 +100,7 @@ class VideoDownloader {
 
     // Audio Option
     const audioOption = document.createElement("div");
-    audioOption.innerText = "Download Audio";
+    audioOption.innerText = "Audio";
     this.styleOption(audioOption);
     audioOption.onclick = () => {
       this.startDownload("audio");
@@ -122,7 +109,7 @@ class VideoDownloader {
 
     // Video Option
     const videoOption = document.createElement("div");
-    videoOption.innerText = "Download Video";
+    videoOption.innerText = "Video";
     this.styleOption(videoOption);
     videoOption.onclick = () => {
       this.startDownload("video");
@@ -130,12 +117,9 @@ class VideoDownloader {
     };
 
     // Transcript Option
-    const divider = document.createElement("div");
-    divider.style.borderTop = "1px solid #4a4a52";
-    divider.style.margin = "4px 0";
 
     const transcriptOption = document.createElement("div");
-    transcriptOption.innerText = "📝 Transcript";
+    transcriptOption.innerText = "Transcript";
     this.styleOption(transcriptOption);
     transcriptOption.onclick = () => {
       this.startDownload("transcript");
@@ -144,7 +128,6 @@ class VideoDownloader {
 
     menu.appendChild(audioOption);
     menu.appendChild(videoOption);
-    menu.appendChild(divider);
     menu.appendChild(transcriptOption);
 
     container.appendChild(button);
@@ -207,8 +190,6 @@ class VideoDownloader {
         );
         return;
       }
-
-      console.log(`[Scaler++] Stream URL found, opening downloader tab.`);
 
       chrome.runtime.sendMessage(
         {

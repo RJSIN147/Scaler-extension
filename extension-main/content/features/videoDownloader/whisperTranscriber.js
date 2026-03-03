@@ -11,7 +11,7 @@
 
 class WhisperTranscriber {
   constructor(logFn) {
-    this.log = logFn || console.log;
+    this.log = logFn || (() => {});
     this.pipeline = null;
   }
 
