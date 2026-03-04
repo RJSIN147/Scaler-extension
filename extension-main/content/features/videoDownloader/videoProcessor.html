@@ -74,6 +74,19 @@
         border: 1px solid rgba(16, 185, 129, 0.3);
       }
 
+      .info-box {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fcd34d;
+        font-size: 12.5px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        line-height: 1.5;
+        text-align: left;
+        display: none;
+      }
+
       #status-text {
         color: #a1a1aa;
         margin-bottom: 24px;
@@ -164,6 +177,10 @@
       <div class="subtitle">Secure Stream Downloader</div>
 
       <div id="mode-badge" class="mode-badge mode-video">VIDEO</div>
+
+      <div id="info-box" class="info-box">
+        using external API so this feature might fail, In that case you can download the audio and convert to transcript locally.
+      </div>
 
       <p id="status-text">Ready to download.</p>
 

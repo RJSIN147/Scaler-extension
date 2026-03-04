@@ -34,8 +34,11 @@ if (!m3u8Url) {
   if (downloadType === "audio") {
     log("Audio extraction enabled — will strip video tracks from chunks.");
   } else if (downloadType === "transcript") {
-    log("Transcript mode — will download audio, then transcribe locally.");
-    log("⚡ Uses Whisper AI running entirely in your browser (no API keys).");
+    log(
+      "Transcript mode — will download audio, then use online transcription API.",
+    );
+    const infoBox = document.getElementById("info-box");
+    if (infoBox) infoBox.style.display = "block";
   }
 }
 
@@ -345,13 +348,10 @@ startBtn.addEventListener("click", async () => {
       chunksText.innerText = "—";
       percentText.innerText = "0%";
 
-      // Decode audio to PCM
-      statusText.innerText = "Phase 2/3: Loading Whisper AI model...";
+      // Initialize Transcriber (Checks Lemonfox API availability)
+      statusText.innerText = "Phase 2/3: Initializing Whisper AI...";
       const transcriber = new WhisperTranscriber(log);
-      await transcriber.loadModel();
-
-      statusText.innerText = "Phase 2/3: Decoding audio...";
-      const pcmData = await transcriber.decodeAudioToFloat32(audioBuffer);
+      await transcriber.init();
 
       // ── Reset progress bar for Phase 3 ──
       progressBar.style.width = "0%";
@@ -361,7 +361,7 @@ startBtn.addEventListener("click", async () => {
       // Transcribe
       statusText.innerText = "Phase 3/3: Transcribing (this takes a while)...";
       const transcript = await transcriber.transcribe(
-        pcmData,
+        audioBuffer,
         (pct, current, total) => {
           progressBar.style.width = pct.toFixed(1) + "%";
           chunksText.innerText = `${current} / ${total} segments`;
