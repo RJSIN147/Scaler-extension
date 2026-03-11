@@ -45,6 +45,10 @@ Automatically resets the code editor in assignments if not touched for 5+ hours.
 
 Search from all the problems instantly by name, topic, type, or day.
 
+## 🏆 Contest Leaderboard
+
+Always shows a clickable "View Leaderboard" link on contest pages, even during active contests when it's normally disabled.
+
 ## 🧹 CLEANER DASHBOARD
 
 ### 🌍 Global Elements (All Pages)
@@ -107,7 +111,7 @@ extension-main/
     │   │   ├── audioTranscriber.js   ← Lemonfox API transcription engine
     │   │   └── modeBadge.js          ← Audio/Video/Transcript mode badge
     │   ├── problemSearch, practiceMode, leetcodeLink,
-    │   │   joinClassButton, companionBypass, subjectSort
+    │   │   joinClassButton, companionBypass, subjectSort, contestLeaderboard
     └── utils/               ← domUtils, stringUtils
 ```
 

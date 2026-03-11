@@ -39,6 +39,9 @@ const DEFAULT_SETTINGS = {
   "calendar-sync": true,
   "mess-fee-filled-timestamp": null,
 
+  // Contest
+  "contest-leaderboard": true,
+
   // Assignment
   companion: true,
 };
@@ -69,6 +72,7 @@ const TOGGLE_MAP = {
   "toggle-subject-sort": "subject-sort",
   "toggle-video-downloader": "video-downloader",
   "toggle-calendar-sync": "calendar-sync",
+  "toggle-contest-leaderboard": "contest-leaderboard",
 };
 
 // Current settings state
@@ -172,6 +176,7 @@ async function handleToggleChange(toggleId, settingKey) {
       "companion-bypass",
       "subject-sort",
       "video-downloader",
+      "contest-leaderboard",
     ].includes(settingKey);
     if (isEnhancement) {
       showToast(newValue ? "Enabled ✓" : "Disabled ✓", "success");

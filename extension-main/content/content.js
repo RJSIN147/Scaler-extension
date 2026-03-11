@@ -90,6 +90,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       } else {
         restoreSubjectSort();
       }
+    } else if (key === "contest-leaderboard") {
+      if (value) {
+        initContestLeaderboard();
+      } else {
+        // Remove injected leaderboard links by reloading the page
+        // or simply disconnect the observer
+        if (window._leaderboardObserver) {
+          window._leaderboardObserver.disconnect();
+          window._leaderboardObserver = null;
+        }
+      }
     } else {
       updateVisibilityForKey(key, value);
     }
@@ -120,6 +131,9 @@ window.addEventListener("load", async () => {
 
   // Initialize Join Session buttons on dashboard
   setTimeout(initJoinSessionButtons, 1500);
+
+  // Initialize Contest Leaderboard on contest pages
+  setTimeout(initContestLeaderboard, 2000);
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -164,5 +178,10 @@ handleUrlChange = function () {
   // Re-initialize Subject Sort on curriculum navigation
   if (window.location.href.includes("/core-curriculum")) {
     setTimeout(initSubjectSort, 1500);
+  }
+
+  // Re-initialize Contest Leaderboard on contest navigation
+  if (isContestPage()) {
+    setTimeout(initContestLeaderboard, 2000);
   }
 };

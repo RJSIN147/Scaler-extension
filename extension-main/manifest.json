@@ -22,9 +22,7 @@
   ],
   "oauth2": {
     "client_id": "240142215084-so5ckgh5al2d6aipa0fg9bsokt2gdp61.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/calendar.events"
-    ]
+    "scopes": ["https://www.googleapis.com/auth/calendar.events"]
   },
   "background": {
     "service_worker": "background/background.js"
@@ -41,10 +39,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://www.scaler.com/*",
-        "https://scaler.com/*"
-      ],
+      "matches": ["https://www.scaler.com/*", "https://scaler.com/*"],
       "js": [
         "content/cleaner/selectors.js",
         "content/core/settings.js",
@@ -60,6 +55,7 @@
         "content/features/practiceMode.js",
         "content/features/joinClassButton.js",
         "content/features/subjectSort.js",
+        "content/features/contestLeaderboard.js",
         "content/features/videoDownloader/videoDownloader.js",
         "content/content.js"
       ],
@@ -74,22 +70,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "icons/leetcode_icon.png"
-      ],
-      "matches": [
-        "https://www.scaler.com/*",
-        "https://scaler.com/*"
-      ]
+      "resources": ["icons/leetcode_icon.png"],
+      "matches": ["https://www.scaler.com/*", "https://scaler.com/*"]
     },
     {
-      "resources": [
-        "content/features/videoDownloader/*"
-      ],
-      "matches": [
-        "https://www.scaler.com/*",
-        "https://scaler.com/*"
-      ]
+      "resources": ["content/features/videoDownloader/*"],
+      "matches": ["https://www.scaler.com/*", "https://scaler.com/*"]
     }
   ],
   "content_security_policy": {

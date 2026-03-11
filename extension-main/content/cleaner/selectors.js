@@ -41,6 +41,9 @@ const DEFAULT_SETTINGS = {
   companion: true,
   "subject-sort": true,
   "mess-fee-filled-timestamp": null,
+
+  // Contest
+  "contest-leaderboard": true,
 };
 
 // Elements config for /academy/mentee-dashboard/todos page
